@@ -576,7 +576,7 @@ export const usetoggleRecentOrder = defineStore("recentOrders", {
           } else {
             this.alert.createAlert(
               "Message",
-              "You don't Have Permission to Cancel ",
+              "You don't have permission to cancel",
               "OK"
             );
             this.cancelInvoiceFlag = false;

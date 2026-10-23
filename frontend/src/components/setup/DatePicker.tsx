@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { useState, useRef, useEffect, useMemo, useCallback, useLayoutEffect } from 'react';
 import {
   startOfDay,
@@ -286,7 +287,7 @@ export function DatePicker({
               </svg>
             </button>
             <span className="text-sm font-semibold text-gray-800">
-              {MONTH_NAMES[viewDate.getMonth()]}, {viewDate.getFullYear()}
+              {__(MONTH_NAMES[viewDate.getMonth()])}, {viewDate.getFullYear()}
             </span>
             <button
               type="button"
@@ -303,7 +304,7 @@ export function DatePicker({
           <div className="grid grid-cols-7 gap-1 text-center mb-1">
             {WEEKDAYS.map((wd) => (
               <span key={wd} className="text-xs font-semibold text-gray-400">
-                {wd}
+                {__(wd, null, 'Weekday')}
               </span>
             ))}
           </div>
@@ -347,7 +348,7 @@ export function DatePicker({
               onClick={handleTodayClick}
               className="text-sm font-medium text-gray-700 hover:text-primary transition-colors"
             >
-              Today
+              {__('Today')}
             </button>
           </div>
         </div>
@@ -413,21 +414,21 @@ export function UryDateRangePicker({ value, onChange, className }: UryDateRangeP
 
   const presets = [
     {
-      label: 'Today',
+      label: __('Today'),
       getRange: (): DateRangeValue => {
         const today = new Date();
         return { from: startOfDay(today), to: endOfDay(today) };
       },
     },
     {
-      label: 'This Week',
+      label: __('This Week'),
       getRange: (): DateRangeValue => {
         const today = new Date();
         return { from: startOfWeek(today), to: endOfWeek(today) };
       },
     },
     {
-      label: 'This Month',
+      label: __('This Month'),
       getRange: (): DateRangeValue => {
         const today = new Date();
         return { from: startOfMonth(today), to: endOfMonth(today) };
@@ -556,7 +557,7 @@ export function UryDateRangePicker({ value, onChange, className }: UryDateRangeP
               </svg>
             </button>
             <span className="text-sm font-semibold text-gray-800">
-              {MONTH_NAMES[viewDate.getMonth()]}, {viewDate.getFullYear()}
+              {__(MONTH_NAMES[viewDate.getMonth()])}, {viewDate.getFullYear()}
             </span>
             <button
               type="button"
@@ -573,7 +574,7 @@ export function UryDateRangePicker({ value, onChange, className }: UryDateRangeP
           <div className="grid grid-cols-7 gap-1 text-center mb-2">
             {WEEKDAYS.map((wd) => (
               <span key={wd} className="text-xs font-semibold text-gray-400">
-                {wd}
+                {__(wd, null, 'Weekday')}
               </span>
             ))}
           </div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { IndianRupee, Receipt, TrendingUp, Trophy } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -32,12 +32,13 @@ interface TimeWiseSalesData {
   };
 }
 
-const columns: DataTableColumn<IntervalRow>[] = [
-  { key: 'interval_label', header: 'Time Interval' },
-  { key: 'sales', header: 'Sales', render: (r) => formatCurrency(r.sales), align: 'right' },
-  { key: 'bills', header: 'Bills', align: 'right' },
-  { key: 'pct_of_daily_total', header: '% of Day', render: (r) => `${r.pct_of_daily_total}%`, align: 'right' },
-  { key: 'avg_transaction_value', header: 'Avg / Bill', render: (r) => formatCurrency(r.avg_transaction_value), align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<IntervalRow>[] => [
+  { key: 'interval_label', header: __('Time Interval') },
+  { key: 'sales', header: __('Sales'), render: (r) => formatCurrency(r.sales), align: 'right' },
+  { key: 'bills', header: __('Bills'), align: 'right' },
+  { key: 'pct_of_daily_total', header: __('% of Day'), render: (r) => `${r.pct_of_daily_total}%`, align: 'right' },
+  { key: 'avg_transaction_value', header: __('Avg / Bill'), render: (r) => formatCurrency(r.avg_transaction_value), align: 'right' },
 ];
 
 const BUCKET_OPTIONS = [1, 2, 4];
@@ -62,7 +63,7 @@ export function TimeWiseSales() {
       });
       setData(res.message ?? (res as unknown as TimeWiseSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -76,9 +77,9 @@ export function TimeWiseSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Time Wise Sales</h1>
+          <h1 className="text-xl font-semibold">{__('Time Wise Sales')}</h1>
           <p className="text-sm text-muted-foreground">
-            Sales by time of day {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Sales by time of day')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -89,7 +90,7 @@ export function TimeWiseSales() {
               onChange={(_, val) => setBucketSize(Number(val))}
               options={BUCKET_OPTIONS.map((b) => ({
                 value: String(b),
-                label: `${b}-hour buckets`,
+                label: __('{0}-hour buckets', [b]),
               }))}
               strict
             />
@@ -111,23 +112,23 @@ export function TimeWiseSales() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label="Total Sales"
+              label={__('Total Sales')}
               value={formatCurrency(data.summary.total_sales)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
-            <StatCard label="Total Bills" value={data.summary.total_bills} icon={<Receipt className="w-4 h-4" />} />
+            <StatCard label={__('Total Bills')} value={data.summary.total_bills} icon={<Receipt className="w-4 h-4" />} />
             <StatCard
-              label="Avg / Bill"
+              label={__('Avg / Bill')}
               value={formatCurrency(data.summary.avg_sale_per_bill)}
               icon={<TrendingUp className="w-4 h-4" />}
             />
             <StatCard
-              label="Peak Interval"
+              label={__('Peak Interval')}
               value={data.summary.peak_interval ?? '—'}
               delta={
                 data.summary.peak_interval
@@ -139,14 +140,14 @@ export function TimeWiseSales() {
           </div>
 
           <BarChartCard
-            title="Sales by Time of Day"
+            title={__('Sales by Time of Day')}
             data={data.intervals}
             xKey="interval_label"
             yKeys={['sales']}
-            labels={{ sales: 'Sales' }}
+            labels={{ sales: __('Sales') }}
           />
 
-          <DataTable columns={columns} rows={data.intervals} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.intervals} isLoading={isLoading} />
         </>
       ) : null}
     </div>

@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Input } from '@ury/ui';
@@ -30,7 +31,7 @@ export function SearchableSelect({
   id,
   value,
   options = [],
-  placeholder = 'Select...',
+  placeholder,
   error,
   onChange,
   onBlur,
@@ -217,7 +218,7 @@ export function SearchableSelect({
           );
         })
       ) : (
-        <div className="px-4 py-2 text-sm text-gray-400">No matching options</div>
+        <div className="px-4 py-2 text-sm text-gray-400">{__('No matching options')}</div>
       )}
     </div>
   ) : null;
@@ -230,7 +231,7 @@ export function SearchableSelect({
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={handleFocus}
-          placeholder={placeholder}
+          placeholder={placeholder ?? __('Select...')}
           error={error}
           disabled={disabled}
           autoComplete="off"

@@ -1,10 +1,11 @@
+import { __ } from '@ury/core';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+    { icon: LayoutDashboard, label: __('Dashboard'), path: '/dashboard' },
   ];
 
   return (

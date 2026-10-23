@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getLoggedUser, getUserRoles } from '@ury/core';
+import { getLoggedUser, getUserRoles, __ } from '@ury/core';
 
 interface AuthState {
   user: string | null;
@@ -43,7 +43,7 @@ export function useAuth(): AuthState {
         setFullName(full_name);
       } catch (err) {
         if (cancelled) return;
-        setError(err instanceof Error ? err.message : 'Failed to load user');
+        setError(err instanceof Error ? err.message : __('Failed to load user'));
         setUser(null);
         setRoles([]);
         setFullName('');

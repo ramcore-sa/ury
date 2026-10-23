@@ -5,7 +5,7 @@ import { Card, Button, Badge, Input, Spinner, showToast } from '@ury/ui';
 import { SearchableSelect } from '../../components/common/SearchableSelect';
 import { Switch } from '../../components/ui/switch';
 import { dashboardService } from '../../services/dashboard';
-import { call } from '@ury/core';
+import { call, __ } from '@ury/core';
 import SideDrawer from '../../components/layout/SideDrawer';
 
 interface UserRecord {
@@ -132,7 +132,7 @@ export const UserPage: React.FC = () => {
         enabled: newUser.enabled ? 1 : 0,
       };
       if (JSON.stringify(original) === JSON.stringify(current)) {
-        showToast.warning('No changes in document');
+        showToast.warning(__('No changes in document'));
         return;
       }
     }
@@ -182,10 +182,10 @@ export const UserPage: React.FC = () => {
       }
       fetchUsers();
       setIsDrawerOpen(false);
-      showToast.success(`User ${editingUser ? 'updated' : 'added'} successfully`);
+      showToast.success(editingUser ? __('User updated successfully') : __('User added successfully'));
     } catch (err: any) {
       console.error('Failed to save User', err);
-      let errorMessage = 'Failed to save User';
+      let errorMessage = __('Failed to save User');
       if (err._server_messages) {
         try {
           const messages = JSON.parse(err._server_messages);
@@ -199,7 +199,7 @@ export const UserPage: React.FC = () => {
       } else if (err.message) {
         errorMessage = err.message;
       } else if (err.exc) {
-        errorMessage = 'Duplicate entry or server error occurred.';
+        errorMessage = __('Duplicate entry or server error occurred.');
       }
       showToast.error(errorMessage);
     } finally {
@@ -216,7 +216,7 @@ export const UserPage: React.FC = () => {
           className="bg-primary hover:bg-primary/90 text-white font-semibold flex items-center space-x-1.5 shadow-xs"
         >
           <Plus className="w-4 h-4" />
-          <span>Add User</span>
+          <span>{__('Add User')}</span>
         </Button>
       </div>
 
@@ -229,16 +229,16 @@ export const UserPage: React.FC = () => {
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <Users className="w-6 h-6 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">No Users Configured</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{__('No Users Configured')}</h3>
           <p className="text-gray-500 mb-6 max-w-sm">
-            Add staff users and assign them roles for this branch.
+            {__('Add staff users and assign them roles for this branch.')}
           </p>
           <Button
             onClick={openAddDrawer}
             className="bg-primary hover:bg-primary/90 text-white font-semibold flex items-center space-x-1.5 shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>Add User</span>
+            <span>{__('Add User')}</span>
           </Button>
         </Card>
       ) : (
@@ -246,10 +246,10 @@ export const UserPage: React.FC = () => {
           <table className="w-full text-left text-sm text-gray-600">
             <thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
               <tr>
-                <th className="px-6 py-4">User</th>
-                <th className="px-6 py-4">User ID</th>
-                <th className="px-6 py-4">Role</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4">{__('User')}</th>
+                <th className="px-6 py-4">{__('User ID')}</th>
+                <th className="px-6 py-4">{__('Role')}</th>
+                <th className="px-6 py-4 text-right">{__('Actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -271,7 +271,7 @@ export const UserPage: React.FC = () => {
                   <td className="px-6 py-4">
                     <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary text-[10px]">
                       <ShieldCheck className="w-3 h-3 mr-1" />
-                      {getDisplayRole(user)}
+                      {__(getDisplayRole(user))}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -290,12 +290,12 @@ export const UserPage: React.FC = () => {
       <SideDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        title={editingUser ? 'Edit User' : 'Add User'}
+        title={editingUser ? __('Edit User') : __('Add User')}
       >
         <form onSubmit={handleSaveUser} className="space-y-5 text-sm">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-gray-700 mb-1.5">First Name</label>
+              <label className="block font-semibold text-gray-700 mb-1.5">{__('First Name')}</label>
               <Input
                 value={newUser.first_name}
                 onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
@@ -303,7 +303,7 @@ export const UserPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-gray-700 mb-1.5">Last Name</label>
+              <label className="block font-semibold text-gray-700 mb-1.5">{__('Last Name')}</label>
               <Input
                 value={newUser.last_name}
                 onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
@@ -312,7 +312,7 @@ export const UserPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block font-semibold text-gray-700 mb-1.5">User ID</label>
+            <label className="block font-semibold text-gray-700 mb-1.5">{__('User ID')}</label>
             <Input
               type="email"
               value={newUser.email}
@@ -323,7 +323,7 @@ export const UserPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block font-semibold text-gray-700 mb-1.5">Role</label>
+            <label className="block font-semibold text-gray-700 mb-1.5">{__('Role')}</label>
             <SearchableSelect
               id="role"
               value={newUser.role}
@@ -332,9 +332,9 @@ export const UserPage: React.FC = () => {
                 allRoles.length > 0 
                   ? allRoles.map(r => ({ value: r.name, label: r.name }))
                   : [
-                      { value: 'URY Cashier', label: 'URY Cashier' },
-                      { value: 'URY Waiter', label: 'URY Waiter' },
-                      { value: 'URY Manager', label: 'URY Manager' },
+                      { value: 'URY Cashier', label: __('URY Cashier') },
+                      { value: 'URY Waiter', label: __('URY Waiter') },
+                      { value: 'URY Manager', label: __('URY Manager') },
                     ]
               }
             />
@@ -342,10 +342,10 @@ export const UserPage: React.FC = () => {
 
           <div className="pt-6 flex justify-end gap-3 border-t mt-4 border-gray-100">
             <Button type="button" variant="outline" onClick={() => setIsDrawerOpen(false)} disabled={saving}>
-              Cancel
+              {__('Cancel')}
             </Button>
             <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-6 flex items-center gap-2" disabled={saving}>
-              {editingUser ? 'Save Changes' : 'Create User'}
+              {editingUser ? __('Save Changes') : __('Create User')}
             </Button>
           </div>
         </form>

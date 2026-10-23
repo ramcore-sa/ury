@@ -5,6 +5,7 @@ import {
   TableOrderContext,
   TableOrderPermissions,
 } from '../../lib/table-order-context-api';
+import { t } from '../../i18n';
 
 export interface BaselineItem {
   uniqueId: string;
@@ -90,7 +91,7 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
       const result = await getTableOrderContext(table);
       setContext(result);
     } catch (err) {
-      setContextError((err as Error).message || 'Failed to load table order context.');
+      setContextError((err as Error).message || t('captain.load_table_context_failed'));
       setContext(null);
     } finally {
       setIsContextLoading(false);
@@ -120,7 +121,7 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
         }
       } catch (err) {
         if (cancelled) return;
-        setContextError((err as Error).message || 'Failed to load table order context.');
+        setContextError((err as Error).message || t('captain.load_table_context_failed'));
         setContext(null);
       } finally {
         if (!cancelled) setIsContextLoading(false);

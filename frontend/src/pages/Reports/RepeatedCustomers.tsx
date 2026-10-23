@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call } from '@ury/core';
+import { call, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Users, UserPlus, Repeat, Percent } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -26,12 +26,13 @@ interface RepeatedCustomersData {
   };
 }
 
-const columns: DataTableColumn<DayRow>[] = [
-  { key: 'date', header: 'Date' },
-  { key: 'total_customers', header: 'Total', align: 'right' },
-  { key: 'new_customers', header: 'New', align: 'right' },
-  { key: 'repeat_customers', header: 'Repeat', align: 'right' },
-  { key: 'repeat_rate_percent', header: 'Repeat Rate', render: (r) => `${r.repeat_rate_percent}%`, align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<DayRow>[] => [
+  { key: 'date', header: __('Date') },
+  { key: 'total_customers', header: __('Total'), align: 'right' },
+  { key: 'new_customers', header: __('New'), align: 'right' },
+  { key: 'repeat_customers', header: __('Repeat'), align: 'right' },
+  { key: 'repeat_rate_percent', header: __('Repeat Rate'), render: (r) => `${r.repeat_rate_percent}%`, align: 'right' },
 ];
 
 export function RepeatedCustomers() {
@@ -56,7 +57,7 @@ export function RepeatedCustomers() {
       });
       setData(res.message ?? (res as unknown as RepeatedCustomersData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -70,9 +71,9 @@ export function RepeatedCustomers() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Repeated Customers</h1>
+          <h1 className="text-xl font-semibold">{__('Repeated Customers')}</h1>
           <p className="text-sm text-muted-foreground">
-            New vs. repeat visits {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('New vs. repeat visits')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -85,29 +86,29 @@ export function RepeatedCustomers() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="Total Visits" value={data.summary.total_customers} icon={<Users className="w-4 h-4" />} />
-            <StatCard label="New Customers" value={data.summary.new_customers} icon={<UserPlus className="w-4 h-4" />} />
-            <StatCard label="Repeat Visits" value={data.summary.repeat_customers} icon={<Repeat className="w-4 h-4" />} />
+            <StatCard label={__('Total Visits')} value={data.summary.total_customers} icon={<Users className="w-4 h-4" />} />
+            <StatCard label={__('New Customers')} value={data.summary.new_customers} icon={<UserPlus className="w-4 h-4" />} />
+            <StatCard label={__('Repeat Visits')} value={data.summary.repeat_customers} icon={<Repeat className="w-4 h-4" />} />
             <StatCard
-              label="Avg Repeat Rate"
+              label={__('Avg Repeat Rate')}
               value={`${data.summary.avg_repeat_rate_percent}%`}
               icon={<Percent className="w-4 h-4" />}
             />
           </div>
 
           <BarChartCard
-            title="New vs Repeat Visits"
+            title={__('New vs Repeat Visits')}
             data={data.rows}
             xKey="date"
             yKeys={['new_customers', 'repeat_customers']}
-            labels={{ new_customers: 'New Customers', repeat_customers: 'Repeat Customers' }}
+            labels={{ new_customers: __('New Customers'), repeat_customers: __('Repeat Customers') }}
           />
 
-          <DataTable columns={columns} rows={data.rows} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.rows} isLoading={isLoading} />
         </>
       ) : null}
     </div>

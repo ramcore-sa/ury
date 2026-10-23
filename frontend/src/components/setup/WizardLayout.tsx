@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { ReactNode } from 'react';
 import { Button } from '@ury/ui';
 import { Check } from 'lucide-react';
@@ -36,14 +37,14 @@ export function WizardLayout({
         <div className={`${SHELL_WIDTH} h-16 flex items-center justify-between gap-4`}>
           <div className="flex items-center gap-3">
             <img src={uryLogo} alt="URY Logo" className="h-7 w-auto" />
-            <span className="text-sm font-semibold text-foreground leading-none">Let's get your restaurant ready</span>
+            <span className="text-sm font-semibold text-foreground leading-none">{__("Let's get your restaurant ready")}</span>
           </div>
 
           {/* 2-step breadcrumb (Setup, Configure) */}
           <div className="hidden sm:flex items-center gap-2">
-            <BreadcrumbStep label="Setup" state={step === 1 ? 'active' : 'done'} />
+            <BreadcrumbStep label={__('Setup')} state={step === 1 ? 'active' : 'done'} />
             <div className={`w-8 h-px ${step === 2 ? 'bg-primary' : 'bg-border'}`} />
-            <BreadcrumbStep label="Configure" state={step === 2 ? 'active' : 'upcoming'} />
+            <BreadcrumbStep label={__('Configure')} state={step === 2 ? 'active' : 'upcoming'} />
           </div>
         </div>
       </header>
@@ -59,7 +60,7 @@ export function WizardLayout({
           <div className="flex items-center h-full">
             {step === 2 && onPrev && (
               <Button variant="outline" onClick={onPrev}>
-                Previous
+                {__('Previous')}
               </Button>
             )}
           </div>
@@ -67,7 +68,7 @@ export function WizardLayout({
           <div className="flex items-center gap-4 h-full">
             {secondaryAction}
             <Button variant="default" onClick={onNext} disabled={isNextDisabled || isNextLoading} className="px-6">
-              {isNextLoading ? 'Working...' : nextLabel}
+              {isNextLoading ? __('Working...') : nextLabel}
             </Button>
           </div>
         </div>

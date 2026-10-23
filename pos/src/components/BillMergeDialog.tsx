@@ -222,7 +222,7 @@ const BillMergeDialog = ({
                 <p className="font-medium text-gray-900">{row.name}</p>
                 <p className="text-xs text-gray-500">
                   {row.customer_name || row.customer}
-                  {tableLabel ? ` • Table ${tableLabel}` : ''}
+                  {tableLabel ? ` • ${t('orders.table_label', { table: tableLabel })}` : ''}
                 </p>
               </div>
               <span className="ms-3 shrink-0 text-sm font-semibold text-gray-900 tabular-nums">

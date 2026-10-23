@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { IndianRupee, TrendingUp, Trophy, TrendingDown } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -29,14 +29,15 @@ interface MonthWiseSalesData {
   };
 }
 
-const columns: DataTableColumn<MonthRow>[] = [
-  { key: 'month', header: 'Month' },
-  { key: 'item_total', header: 'Item Total', render: (r) => formatCurrency(r.item_total), align: 'right' },
-  { key: 'taxes', header: 'Taxes', render: (r) => formatCurrency(r.taxes), align: 'right' },
-  { key: 'grand_total', header: 'Grand Total', render: (r) => formatCurrency(r.grand_total), align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<MonthRow>[] => [
+  { key: 'month', header: __('Month') },
+  { key: 'item_total', header: __('Item Total'), render: (r) => formatCurrency(r.item_total), align: 'right' },
+  { key: 'taxes', header: __('Taxes'), render: (r) => formatCurrency(r.taxes), align: 'right' },
+  { key: 'grand_total', header: __('Grand Total'), render: (r) => formatCurrency(r.grand_total), align: 'right' },
   {
     key: 'growth_percentage',
-    header: 'Growth',
+    header: __('Growth'),
     align: 'right',
     render: (r) =>
       r.growth_percentage === null ? '—' : `${r.growth_percentage > 0 ? '+' : ''}${r.growth_percentage}%`,
@@ -63,7 +64,7 @@ export function MonthWiseSales() {
       });
       setData(res.message ?? (res as unknown as MonthWiseSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -77,9 +78,9 @@ export function MonthWiseSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Month Wise Sales</h1>
+          <h1 className="text-xl font-semibold">{__('Month Wise Sales')}</h1>
           <p className="text-sm text-muted-foreground">
-            Monthly revenue trend {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Monthly revenue trend')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <div className="w-44">
@@ -89,7 +90,7 @@ export function MonthWiseSales() {
             onChange={(_, val) => setMonthsBack(Number(val))}
             options={MONTH_OPTIONS.map((m) => ({
               value: String(m),
-              label: `Last ${m} months`,
+              label: __('Last {0} months', [m]),
             }))}
             strict
           />
@@ -103,37 +104,37 @@ export function MonthWiseSales() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label="Total Revenue"
+              label={__('Total Revenue')}
               value={formatCurrency(data.summary.total_revenue)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
             <StatCard
-              label="Avg Monthly"
+              label={__('Avg Monthly')}
               value={formatCurrency(data.summary.average_monthly_revenue)}
               icon={<TrendingUp className="w-4 h-4" />}
             />
-            <StatCard label="Best Month" value={data.summary.best_month ?? '—'} icon={<Trophy className="w-4 h-4" />} />
+            <StatCard label={__('Best Month')} value={data.summary.best_month ?? '—'} icon={<Trophy className="w-4 h-4" />} />
             <StatCard
-              label="Weakest Month"
+              label={__('Weakest Month')}
               value={data.summary.worst_month ?? '—'}
               icon={<TrendingDown className="w-4 h-4" />}
             />
           </div>
 
           <BarChartCard
-            title="Monthly Grand Total"
+            title={__('Monthly Grand Total')}
             data={data.data}
             xKey="month"
             yKeys={['grand_total']}
-            labels={{ grand_total: 'Grand Total' }}
+            labels={{ grand_total: __('Grand Total') }}
           />
 
-          <DataTable columns={columns} rows={data.data} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.data} isLoading={isLoading} />
         </>
       ) : null}
     </div>

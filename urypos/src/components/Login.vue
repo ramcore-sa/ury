@@ -9,7 +9,7 @@
         <div class="mb-8 flex justify-center">
           <img
             :src="imagePath"
-            alt="URY POS logo"
+            :alt='__("URY POS logo")'
             class="h-8 w-auto sm:h-8 lg:h-8"
           />
         </div>
@@ -82,7 +82,7 @@
               @click="this.auth.showPassword = !this.auth.showPassword"
             >
               <span class="text-sm text-gray-400">
-                {{ this.auth.showPassword ? "Hide" : "Show" }}
+                {{ this.auth.showPassword ? __("Hide") : __("Show") }}
               </span>
             </button>
           </div>
@@ -92,7 +92,7 @@
             type="submit"
             class="flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Login
+            {{ __("Login") }}
           </button>
         </form>
       </div>

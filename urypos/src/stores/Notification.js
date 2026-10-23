@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 
 export const useNotifications = defineStore("notification", {
   state: () => ({}),
@@ -22,7 +23,7 @@ export const useNotifications = defineStore("notification", {
       // Create close button
       const closeBtn = document.createElement("span");
       closeBtn.innerHTML = `
-          <span class="sr-only">Close</span>
+          <span class="sr-only">${__("Close")}</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>`;
@@ -43,7 +44,8 @@ export const useNotifications = defineStore("notification", {
 
       // Add message to notification element
       const messageEl = document.createElement("h2");
-      messageEl.textContent = message;
+      // Same reasoning as the alert dialog: one place covers every caller.
+      messageEl.textContent = __(message);
       messageEl.classList.add("mt-2");
 
       // Add message to notification element

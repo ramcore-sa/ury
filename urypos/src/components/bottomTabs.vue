@@ -43,7 +43,7 @@
               'text-blue-600': this.tabClick.currentTab === '/Table',
             },
           ]"
-          >Table</span
+          >{{ __("Table") }}</span
         >
       </router-link>
 
@@ -80,7 +80,7 @@
               'text-blue-600': this.tabClick.currentTab === '/Menu',
             },
           ]"
-          >Menu</span
+          >{{ __("Menu") }}</span
         ></router-link
       >
       <router-link
@@ -116,7 +116,7 @@
               'text-blue-600': this.tabClick.currentTab === '/Customer',
             },
           ]"
-          >Customer</span
+          >{{ __("Customer") }}</span
         ></router-link
       >
       <router-link
@@ -150,7 +150,7 @@
               'text-blue-600': this.tabClick.currentTab === '/Cart',
             },
           ]"
-          >Cart</span
+          >{{ __("Cart") }}</span
         >
       </router-link>
       <router-link
@@ -187,7 +187,7 @@
               'text-blue-600': this.tabClick.currentTab === '/recentOrder',
             },
           ]"
-          >OrderLog</span
+          >{{ __("OrderLog") }}</span
         >
       </router-link>
     </div>

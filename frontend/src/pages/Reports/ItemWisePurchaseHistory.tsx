@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Package, IndianRupee } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -22,13 +22,14 @@ interface ItemWisePurchaseHistoryData {
   summary: { total_qty: number; total_amount: number };
 }
 
-const columns: DataTableColumn<PurchaseItemRow>[] = [
-  { key: 'item_name', header: 'Item' },
-  { key: 'qty', header: 'Qty Purchased', align: 'right' },
-  { key: 'avg_rate', header: 'Avg Rate', render: (r) => formatCurrency(r.avg_rate), align: 'right' },
-  { key: 'amount', header: 'Total Spend', render: (r) => formatCurrency(r.amount), align: 'right' },
-  { key: 'purchase_count', header: '# Purchases', align: 'right' },
-  { key: 'supplier_count', header: '# Suppliers', align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<PurchaseItemRow>[] => [
+  { key: 'item_name', header: __('Item') },
+  { key: 'qty', header: __('Qty Purchased'), align: 'right' },
+  { key: 'avg_rate', header: __('Avg Rate'), render: (r) => formatCurrency(r.avg_rate), align: 'right' },
+  { key: 'amount', header: __('Total Spend'), render: (r) => formatCurrency(r.amount), align: 'right' },
+  { key: 'purchase_count', header: __('# Purchases'), align: 'right' },
+  { key: 'supplier_count', header: __('# Suppliers'), align: 'right' },
 ];
 
 export function ItemWisePurchaseHistory() {
@@ -52,7 +53,7 @@ export function ItemWisePurchaseHistory() {
       );
       setData(res.message ?? (res as unknown as ItemWisePurchaseHistoryData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -66,9 +67,9 @@ export function ItemWisePurchaseHistory() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Item-wise Purchase History</h1>
+          <h1 className="text-xl font-semibold">{__('Item-wise Purchase History')}</h1>
           <p className="text-sm text-muted-foreground">
-            Procurement by item {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Procurement by item')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -82,9 +83,9 @@ export function ItemWisePurchaseHistory() {
 
       {data && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard label="Total Qty Purchased" value={data.summary.total_qty} icon={<Package className="w-4 h-4" />} />
+          <StatCard label={__('Total Qty Purchased')} value={data.summary.total_qty} icon={<Package className="w-4 h-4" />} />
           <StatCard
-            label="Total Spend"
+            label={__('Total Spend')}
             value={formatCurrency(data.summary.total_amount)}
             icon={<IndianRupee className="w-4 h-4" />}
           />
@@ -92,10 +93,10 @@ export function ItemWisePurchaseHistory() {
       )}
 
       <DataTable
-        columns={columns}
+        columns={getColumns()}
         rows={data?.items ?? []}
         isLoading={isLoading}
-        emptyMessage="No purchase records in this range — Purchase Invoices are created via standard ERPNext Desk, not a URY-specific workflow, so this may legitimately be sparse."
+        emptyMessage={__('No purchase records in this range — Purchase Invoices are created via standard ERPNext Desk, not a URY-specific workflow, so this may legitimately be sparse.')}
       />
     </div>
   );

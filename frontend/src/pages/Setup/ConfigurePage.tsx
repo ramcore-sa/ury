@@ -17,45 +17,40 @@ import { MenuSection } from '../../components/setup/sections/MenuSection';
 import { PaymentSection } from '../../components/setup/sections/PaymentSection';
 import { UserSection } from '../../components/setup/sections/UserSection';
 import { setupService } from '../../services/setup';
-import { call } from '@ury/core';
+import { call, __ } from '@ury/core';
 import { CONFIGURE_PROGRESS_STEPS } from '../../components/setup/constants';
 import { ProgressModal } from '../../components/setup/ProgressModal';
 
-const SECTION_CONFIGS: Record<
+// A function, not a constant: __() must run after the catalogue has loaded.
+const getSectionConfigs = (): Record<
   SectionId,
   { title: string; description: string }
-> = {
+> => ({
   branch: {
-    title: 'Branch Details',
-    description:
-      'Set up your main branch name, invoice numbering, and tax details.',
+    title: __('Branch Details'),
+    description: __('Set up your main branch name, invoice numbering, and tax details.'),
   },
   rooms: {
-    title: 'Rooms',
-    description:
-      "Add the seating areas in your restaurant — you'll set how many tables each one has.",
+    title: __('Rooms', null, 'Restaurant'),
+    description: __("Add the seating areas in your restaurant — you'll set how many tables each one has."),
   },
   tables: {
-    title: 'Tables',
-    description:
-      'Review and adjust the tables we generated for each room — rename, adjust seats, or add more.',
+    title: __('Tables'),
+    description: __('Review and adjust the tables we generated for each room — rename, adjust seats, or add more.'),
   },
   menu: {
-    title: 'Menu',
-    description:
-      'Add a few items to get started — you can bulk-import or add hundreds more anytime later.',
+    title: __('Menu'),
+    description: __('Add a few items to get started — you can bulk-import or add hundreds more anytime later.'),
   },
   payment: {
-    title: 'Payments',
-    description:
-      'How your customers will pay. Cash is added by default — add Card, UPI, or others your restaurant accepts.',
+    title: __('Payments'),
+    description: __('How your customers will pay. Cash is added by default — add Card, UPI, or others your restaurant accepts.'),
   },
   users: {
-    title: 'Staff Accounts',
-    description:
-      "Add login accounts for your staff now, or skip this and add them later. We've suggested a starting cashier account below.",
+    title: __('Staff Accounts'),
+    description: __("Add login accounts for your staff now, or skip this and add them later. We've suggested a starting cashier account below."),
   },
-};
+});
 
 function classifyError(err: unknown): {
   type: 'duplicate' | 'network' | 'validation' | 'unknown';
@@ -64,7 +59,7 @@ function classifyError(err: unknown): {
   if (!err) {
     return {
       type: 'unknown',
-      msg: 'An unknown error occurred.',
+      msg: __('An unknown error occurred.'),
     };
   }
 
@@ -72,7 +67,7 @@ function classifyError(err: unknown): {
   if (err instanceof TypeError) {
     return {
       type: 'network',
-      msg: 'Network error, check your connection and retry.',
+      msg: __('Network error, check your connection and retry.'),
     };
   }
 
@@ -109,7 +104,7 @@ function classifyError(err: unknown): {
   ) {
     return {
       type: 'duplicate',
-      msg: 'Some records already exist and have been reused.',
+      msg: __('Some records already exist and have been reused.'),
     };
   }
 
@@ -129,7 +124,7 @@ function classifyError(err: unknown): {
     (typeof err === 'string' ? err : '') ||
     ((err as any)?.message ?? '') ||
     ((err as any)?.exception ?? '') ||
-    'Failed to configure setup. Check backend logs.';
+    __('Failed to configure setup. Check backend logs.');
 
   return {
     type: 'unknown',
@@ -227,7 +222,7 @@ function ConfigurePageContent() {
 
       if (classified.type === 'network') {
         setError(
-          'Network error, check your connection. Your data is preserved. Click "Finish with defaults" to retry.'
+          __('Network error, check your connection. Your data is preserved. Click "Finish with defaults" to retry.')
         );
       } else {
         setError(classified.msg);
@@ -286,19 +281,19 @@ function ConfigurePageContent() {
   };
 
   const config =
-    SECTION_CONFIGS[activeSection] || SECTION_CONFIGS.branch;
+    getSectionConfigs()[activeSection] || getSectionConfigs().branch;
 
   return (
     <WizardLayout
       step={2}
       onPrev={handlePrev}
       onNext={handleNext}
-      nextLabel={isLastSection ? 'Launch' : 'Next'}
+      nextLabel={isLastSection ? __('Launch') : __('Next')}
       isNextLoading={finishing}
       secondaryAction={
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline text-xs text-muted-foreground">
-            the data can be changed later
+            {__('the data can be changed later')}
           </span>
 
           <Button
@@ -307,7 +302,7 @@ function ConfigurePageContent() {
             onClick={handleFinish}
             disabled={finishing}
           >
-            Finish with defaults
+            {__('Finish with defaults')}
           </Button>
         </div>
       }
@@ -317,7 +312,7 @@ function ConfigurePageContent() {
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 text-red-700">
             <div className="flex-1 text-sm font-medium">
               <span className="font-bold block mb-1">
-                Configuration Error:
+                {__('Configuration Error:')}
               </span>
               {error}
             </div>
@@ -326,7 +321,7 @@ function ConfigurePageContent() {
               onClick={() => setError(null)}
               className="text-xs text-red-500 hover:text-red-700 font-semibold underline shrink-0"
             >
-              Dismiss
+              {__('Dismiss')}
             </button>
           </div>
         )}

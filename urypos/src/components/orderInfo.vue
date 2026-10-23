@@ -1,12 +1,12 @@
 <template>
-  <nav class="mb-3 mt-1 flex" aria-label="Breadcrumb" v-if="this.auth.cashier">
+  <nav class="mb-3 mt-1 flex" :aria-label='__("Breadcrumb")' v-if="this.auth.cashier">
     <ol
       class="inline-flex items-center space-x-1 rtl:space-x-reverse md:space-x-2"
     >
       <li>
         <div class="flex items-center">
           <span class="text-base font-medium text-gray-700 dark:text-gray-400"
-            >Order</span
+            >{{ __("Order") }}</span
           >
         </div>
       </li>

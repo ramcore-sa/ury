@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 import { useTableStore } from "./Table.js";
 import { useNotifications } from "./Notification.js";
 import { usetoggleRecentOrder } from "./recentOrder.js";
@@ -148,8 +149,9 @@ export const useCustomerStore = defineStore("customers", {
         if (!this.customerTerritory) {
           missingFields.push("Territory");
         }
-        const missingFieldsMessage =
-          "Following fields have missing values: " + missingFields.join(", ");
+        const missingFieldsMessage = __("Following fields have missing values: {0}", [
+          missingFields.map((field) => __(field)).join(", "),
+        ]);
         this.alert.createAlert("Message", missingFieldsMessage, "OK");
       } else {
         this.showAddNewCustomer = false;

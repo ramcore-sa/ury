@@ -1435,7 +1435,7 @@ def sync_order(
             return {"status": "Failure"}
 
     if not customer:
-        frappe.throw("Please enter valid customer details")
+        frappe.throw(_("Please enter valid customer details"))
     else:
         invoice.customer = customer
 
@@ -1502,7 +1502,7 @@ def sync_order(
         price_list = frappe.db.get_value("Aggregator Settings",{"customer": customer, "parent": invoice.branch, "parenttype": "Branch"},"price_list",)
         
         if not price_list:
-            frappe.throw(f"Price list for customer {customer} in branch {invoice.branch} not found in Aggregator Settings.")
+            frappe.throw(_("Price list for customer {0} in branch {1} not found in Aggregator Settings.").format(customer, invoice.branch))
     else:
         price_list = invoice.selling_price_list
 
@@ -1570,7 +1570,7 @@ def sync_order(
     try:
         invoice.save()
     except Exception as e:
-        frappe.throw(f"Error while updating order: {e}")   
+        frappe.throw(_("Error while updating order: {0}").format(e))   
 
 
     try:
@@ -1749,7 +1749,7 @@ def table_transfer(table, newTable, invoice):
         frappe.throw(_("Table transfer between different branches is restricted."))
 
     if new_table.occupied == 1:
-        frappe.throw(f"Table {new_table.name} is already occupied")
+        frappe.throw(_("Table {0} is already occupied").format(new_table.name))
 
     frappe.db.set_value(
         "URY Table",
@@ -2074,7 +2074,7 @@ def make_invoice(customer, payments, cashier, pos_profile,owner, additionalDisco
     try:
         invoice.submit()
     except Exception as e:
-        frappe.throw(f"Error while settling order: {e}")
+        frappe.throw(_("Error while settling order: {0}").format(e))
         
     # Free the table when no other open drafts remain on this table group
 

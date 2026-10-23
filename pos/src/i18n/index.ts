@@ -1,6 +1,7 @@
 import { loadLocale } from './loader';
 import { DEFAULT_LANGUAGE } from './config';
 import { resolveLanguage } from './resolve-language';
+import { getTranslation, loadTranslations } from '@ury/core';
 
 type TranslationMap = Record<string, unknown>;
 
@@ -20,6 +21,7 @@ export async function initI18n(lang?: string): Promise<void> {
   const [resolvedLocale, english] = await Promise.all([
     loadLocale(resolvedLang),
     resolvedLang === DEFAULT_LANGUAGE ? Promise.resolve(null) : loadLocale(DEFAULT_LANGUAGE),
+    loadTranslations(),
   ]);
   activeLocale = resolvedLocale;
   englishLocale = english ?? resolvedLocale;
@@ -82,7 +84,16 @@ export function getActiveLanguage(): string {
  *   t('common.greeting', { name: 'Alice' })  → "Hello, Alice"
  */
 export function t(key: string, params?: Record<string, string | number>): string {
-  let value = lookup(activeLocale, key);
+  // Frappe's catalogue wins over the bundled locale files. It is keyed by the
+  // English text, so en.json is the bridge from a dot-key to a catalogue entry;
+  // that is what lets a site's Translation records, or an app installed after
+  // ury, correct a string without rebuilding this bundle.
+  const english = lookup(englishLocale, key);
+  let value = english !== undefined ? getTranslation(english) : undefined;
+
+  if (value === undefined) {
+    value = lookup(activeLocale, key);
+  }
 
   if (value === undefined) {
     // Fall back to English before surfacing the raw key, so missing

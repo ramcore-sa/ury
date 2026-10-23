@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call } from '@ury/core';
+import { call, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Users } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -21,12 +21,13 @@ interface DaywiseCustomerDetailsData {
   total_count: number;
 }
 
-const columns: DataTableColumn<CustomerRow>[] = [
-  { key: 'customer_name', header: 'Name' },
-  { key: 'mobile_number', header: 'Mobile', render: (r) => r.mobile_number || '—' },
-  { key: 'visit_count', header: 'Visits', align: 'right' },
-  { key: 'first_visit', header: 'First Visit' },
-  { key: 'last_visit', header: 'Last Visit' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<CustomerRow>[] => [
+  { key: 'customer_name', header: __('Name') },
+  { key: 'mobile_number', header: __('Mobile'), render: (r) => r.mobile_number || '—' },
+  { key: 'visit_count', header: __('Visits'), align: 'right' },
+  { key: 'first_visit', header: __('First Visit') },
+  { key: 'last_visit', header: __('Last Visit') },
 ];
 
 export function DaywiseCustomerDetails() {
@@ -50,7 +51,7 @@ export function DaywiseCustomerDetails() {
       );
       setData(res.message ?? (res as unknown as DaywiseCustomerDetailsData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -79,9 +80,9 @@ export function DaywiseCustomerDetails() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Daywise Customer Details</h1>
+          <h1 className="text-xl font-semibold">{__('Daywise Customer Details')}</h1>
           <p className="text-sm text-muted-foreground">
-            Customer contact list {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Customer contact list')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -90,7 +91,7 @@ export function DaywiseCustomerDetails() {
             disabled={!data || data.customers.length === 0}
             className="text-sm px-3 py-1.5 border border-input rounded-md hover:bg-accent disabled:opacity-50"
           >
-            Export CSV
+            {__('Export CSV')}
           </button>
           <DateRangeFilter value={range} onChange={setRange} />
         </div>
@@ -102,9 +103,9 @@ export function DaywiseCustomerDetails() {
         </div>
       )}
 
-      {data && <StatCard label="Unique Customers" value={data.total_count} icon={<Users className="w-4 h-4" />} />}
+      {data && <StatCard label={__('Unique Customers')} value={data.total_count} icon={<Users className="w-4 h-4" />} />}
 
-      <DataTable columns={columns} rows={data?.customers ?? []} isLoading={isLoading} />
+      <DataTable columns={getColumns()} rows={data?.customers ?? []} isLoading={isLoading} />
     </div>
   );
 }

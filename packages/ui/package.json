@@ -16,6 +16,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@ury/core": "*"
+  },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",

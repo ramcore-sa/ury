@@ -1,6 +1,7 @@
 import { StateCreator } from 'zustand';
 import { AuthSlice } from './auth-slice';
 import { getCombinedPosProfile, PosProfileCombined } from '../../lib/pos-profile-api';
+import { t } from '../../i18n';
 
 interface RolePermission {
   name: string;
@@ -144,7 +145,7 @@ export const createConfigSlice: StateCreator<
 
     // If no access, we could redirect or show an error message
     if (!hasAccess) {
-      set({ error: 'You do not have permission to access this application.' });
+      set({ error: t('auth.no_app_permission') });
     }
   },
 

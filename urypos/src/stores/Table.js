@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 import router from "../router";
 import { useMenuStore } from "./Menu.js";
 import { useInvoiceDataStore } from "./invoiceData.js";
@@ -386,7 +387,7 @@ export const useTableStore = defineStore("table", {
               this.alert
                 .createAlert(
                   "Message",
-                  "Table is assigned to " + this.previousOrder.waiter,
+                  __("Table is assigned to {0}", [this.previousOrder.waiter]),
                   "OK"
                 )
                 .then(() => {

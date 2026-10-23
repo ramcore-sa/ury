@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { Input } from '@ury/ui';
 import { SearchableSelect } from '../common/SearchableSelect';
 import { DatePicker } from './DatePicker';
-import { validateFieldValue } from '@ury/core';
+import { validateFieldValue, __ } from '@ury/core';
 import { SetupPayload } from '../../services/setup';
 import validationMessages from '../../data/validations.json';
 
@@ -60,7 +60,7 @@ const { registry } = defineRegistry(formCatalog, {
     FormSection: ({ props, children }) => (
       <div className="w-full space-y-4">
         {props.label && (
-          <h3 className="text-md font-semibold text-foreground">{props.label}</h3>
+          <h3 className="text-md font-semibold text-foreground">{__(props.label)}</h3>
         )}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-4 w-full">
           {children}
@@ -93,7 +93,8 @@ const { registry } = defineRegistry(formCatalog, {
         <div className={getColSpanClass(field)}>
           <div className="space-y-1.5">
             <label htmlFor={field.id} className="text-sm font-medium text-gray-700">
-              {field.label} {field.required && <span className="text-red-500">*</span>}
+              {/* Schema labels come from data/forms/*.json, so they are translated here. */}
+              {__(field.label)} {field.required && <span className="text-red-500">*</span>}
             </label>
 
             {field.type === 'text' || field.type === 'password' || field.type === 'email' ? (
@@ -101,7 +102,7 @@ const { registry } = defineRegistry(formCatalog, {
                 id={field.id}
                 type={field.type}
                 value={val || ''}
-                placeholder={field.placeholder}
+                placeholder={field.placeholder ? __(field.placeholder) : undefined}
                 onChange={(e) => handleChange(e.target.value)}
                 error={!!props.error}
               />
@@ -110,7 +111,7 @@ const { registry } = defineRegistry(formCatalog, {
                 id={field.id}
                 value={val || ''}
                 options={props.options || []}
-                placeholder={`Select ${field.label}...`}
+                placeholder={__('Select {0}...', [__(field.label)])}
                 error={!!props.error}
                 onChange={(_fieldId, newVal) => handleChange(newVal)}
                 strict={true}
@@ -119,7 +120,7 @@ const { registry } = defineRegistry(formCatalog, {
               <DatePicker
                 id={field.id}
                 value={val || ''}
-                placeholder="dd-mm-yyyy"
+                placeholder={__('dd-mm-yyyy')}
                 error={!!props.error}
                 onChange={(_fieldId, newVal) => handleChange(newVal)}
               />
@@ -128,7 +129,7 @@ const { registry } = defineRegistry(formCatalog, {
             {props.error ? (
               <p className="text-xs text-red-500 pt-1">{props.error}</p>
             ) : field.description ? (
-              <p className="text-xs text-gray-500 pt-1">{field.description}</p>
+              <p className="text-xs text-gray-500 pt-1">{__(field.description)}</p>
             ) : null}
           </div>
         </div>
@@ -146,10 +147,10 @@ function buildElementTree(oldSchema: any) {
     sections.push({ fields: oldSchema.fields });
   } else {
     if (oldSchema.company?.length) {
-      sections.push({ label: 'Company Details', fields: oldSchema.company });
+      sections.push({ label: __('Company Details'), fields: oldSchema.company });
     }
     if (oldSchema.general?.length) {
-      sections.push({ label: 'General Settings', fields: oldSchema.general });
+      sections.push({ label: __('General Settings'), fields: oldSchema.general });
     }
   }
 
@@ -221,11 +222,21 @@ export const DynamicForm = forwardRef<DynamicFormHandle, DynamicFormProps>(
         const newErrors: Record<string, string> = {};
         const values = store.get("/") || {};
 
+        // validations.json holds English; translate it per call so the catalogue is loaded.
+        const translatedMessages = {
+          required: __(validationMessages.required),
+          minLength: __(validationMessages.minLength),
+          maxLength: __(validationMessages.maxLength),
+          pattern: Object.fromEntries(
+            Object.entries(validationMessages.pattern).map(([k, v]) => [k, __(v as string)]),
+          ),
+        };
+
         const allFields = Array.isArray(rawSchema.fields) ? rawSchema.fields : [...(rawSchema.company || []), ...(rawSchema.general || [])];
         
         allFields.forEach((field: any) => {
           if (field.validations) {
-            const { valid, message } = validateFieldValue((values as any)[field.id] || '', field.validations, validationMessages);
+            const { valid, message } = validateFieldValue((values as any)[field.id] || '', field.validations, translatedMessages);
             if (!valid) {
               isValid = false;
               newErrors[field.id] = message;

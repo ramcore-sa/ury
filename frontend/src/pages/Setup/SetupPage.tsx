@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WizardLayout } from '../../components/setup/WizardLayout';
@@ -80,7 +81,7 @@ export default function SetupPage() {
 
         const rawCountries = Array.isArray(defaults.countries) ? defaults.countries : [];
         const formattedCountries = rawCountries.map((c: any) =>
-          typeof c === 'string' ? { value: c, label: c } : c
+          typeof c === 'string' ? { value: c, label: __(c) } : c
         );
 
         const rawCurrencies = Array.isArray(defaults.currencies) ? defaults.currencies : [];
@@ -191,7 +192,7 @@ export default function SetupPage() {
       }
       finishSetup(pending);
     } catch (err: any) {
-      setError(err?.message || 'An error occurred during setup');
+      setError(err?.message || __('An error occurred during setup'));
       setSubmitting(false);
     }
   }, [finishSetup]);
@@ -223,11 +224,11 @@ export default function SetupPage() {
       setProgressSteps(
         steps.length
           ? steps.map((step) => step.status)
-          : ['Setting up your restaurant']
+          : [__('Setting up your restaurant')]
       );
     } catch (err) {
       console.error('Failed to load setup stages', err);
-      setProgressSteps(['Setting up your restaurant']);
+      setProgressSteps([__('Setting up your restaurant')]);
     }
 
     finishedRef.current = false;
@@ -241,7 +242,7 @@ export default function SetupPage() {
     <WizardLayout
       step={1}
       onNext={handleNext}
-      nextLabel="Continue"
+      nextLabel={__('Continue')}
       isNextDisabled={submitting}
     >
       <div className="space-y-8">
@@ -253,7 +254,7 @@ export default function SetupPage() {
         />
         
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-4">Installation Type</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">{__('Installation Type')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {setupSchema.installationTypes?.map((type: any) => (
               <InstallationTypeCard 
@@ -269,10 +270,10 @@ export default function SetupPage() {
         <div className="rounded-lg border border-border p-4 flex items-start justify-between gap-4">
           <div className="space-y-1">
             <label htmlFor="setup-ury-demo" className="text-sm font-semibold text-foreground cursor-pointer">
-              Set up with demo data
+              {__('Set up with demo data')}
             </label>
             <p className="text-sm text-muted-foreground">
-              Adds a sample branch, rooms, tables, menu, and POS you can change or delete later.
+              {__('Adds a sample branch, rooms, tables, menu, and POS you can change or delete later.')}
             </p>
           </div>
           <Switch
@@ -293,8 +294,8 @@ export default function SetupPage() {
           eventName="setup_task"
           description={
             setupUryDemo
-              ? 'This can take a few minutes if demo data is on.'
-              : 'Setting things up, this usually takes less than a minute.'
+              ? __('This can take a few minutes if demo data is on.')
+              : __('Setting things up, this usually takes less than a minute.')
           }
           onStepChange={setActiveIndex}
           onReady={doApiCall}

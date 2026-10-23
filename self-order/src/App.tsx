@@ -4,6 +4,7 @@ import TabletLayout from './layouts/TabletLayout'
 import LandscapeKioskLayout from './layouts/LandscapeKioskLayout'
 import PortraitKioskLayout from './layouts/PortraitKioskLayout'
 import type { OrderingLayout } from './lib/api'
+import { __ } from '@ury/core'
 
 const LAYOUTS: Record<OrderingLayout, typeof MobileQRLayout> = {
   Mobile: MobileQRLayout,
@@ -35,7 +36,7 @@ function App() {
     if (deviceError || !deviceContext) {
       return (
         <div className="flex min-h-screen items-center justify-center p-6 text-center text-destructive">
-          {deviceError ?? 'This device could not be started. Please contact staff.'}
+          {deviceError ?? __('This device could not be started. Please contact staff.')}
         </div>
       )
     }

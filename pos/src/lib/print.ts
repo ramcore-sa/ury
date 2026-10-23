@@ -6,6 +6,7 @@ import {
   updatePrintStatus
 } from './invoice-api';
 import { PosProfileCombined } from './pos-profile-api';
+import { t } from '../i18n';
 
 interface PrintOrderParams {
   orderId: string;
@@ -19,7 +20,7 @@ export async function printOrder({ orderId, posProfile, printFormat }: PrintOrde
 
   if (print_type === 'qz') {
     if (!qz_host) {
-      throw new Error('QZ host is not set');
+      throw new Error(t('errors.qz_host_not_set'));
     }
     const html = await getInvoicePrintHtml(orderId, format as string);
     await printWithQz(qz_host, html);

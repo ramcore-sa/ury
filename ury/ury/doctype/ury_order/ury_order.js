@@ -48,16 +48,16 @@ frappe.ui.form.on('URY Order', {
 			method: 'ury.ury.doctype.ury_order.ury_order.pos_opening_check',
 			callback: function (r) {
 				if (!r.message) {
-					frappe.msgprint('Server Error');
+					frappe.msgprint(__('Server Error'));
 				}
 				else if (!r.message.opening_exists) {
-					frappe.msgprint('POS Opening Entry is not created');
+					frappe.msgprint(__('POS Opening Entry is not created'));
 					document.addEventListener('click', function () {
 						window.location.reload();
 					});
 				}
 				else if (!r.message.cashier || !r.message.pos_profile) {
-					frappe.msgprint('Incomplete data. Check POS Opening Entry.');
+					frappe.msgprint(__('Incomplete data. Check POS Opening Entry.'));
 				}
 				else {
 					frappe.dom.unfreeze();
@@ -359,7 +359,7 @@ frappe.ui.form.on('URY Order', {
 		let names = menu_item_list.item_name
 		var added = false;
 		let d = new frappe.ui.Dialog({
-			title: 'Enter details',
+			title: __('Enter details'),
 			fields: [
 				{
 					label: 'Quantity',
@@ -375,7 +375,7 @@ frappe.ui.form.on('URY Order', {
 					default: $(`#${OrderItems}_comment`).val()
 				}
 			],
-			primary_action_label: 'Add',
+			primary_action_label: __('Add'),
 			primary_action(values) {
 				d.hide();
 				(frm.doc.items || []).forEach((d) => {
@@ -1069,7 +1069,7 @@ frappe.ui.form.on('URY Order', {
 
 				else {
 					const d = new frappe.ui.Dialog({
-						title: 'Transfer Table',
+						title: __('Transfer Table'),
 						fields: [
 							{
 								label: 'New Table',
@@ -1088,7 +1088,7 @@ frappe.ui.form.on('URY Order', {
 								default: frm.doc.restaurant_table
 							}
 						],
-						primary_action_label: 'Transfer',
+						primary_action_label: __('Transfer'),
 						primary_action(values) {
 							frappe.dom.freeze();
 							frm.call({
@@ -1139,7 +1139,7 @@ frappe.ui.form.on('URY Order', {
 								}
 								else {
 									let d = new frappe.ui.Dialog({
-										title: 'Transfer Captain',
+										title: __('Transfer Captain'),
 										fields: [
 											{
 												label: 'New Captain',
@@ -1156,7 +1156,7 @@ frappe.ui.form.on('URY Order', {
 											}
 
 										],
-										primary_action_label: 'Transfer',
+										primary_action_label: __('Transfer'),
 										primary_action(values) {
 											frappe.dom.freeze();
 											frm.call({

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { IndianRupee, Receipt, TrendingUp } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -21,12 +21,13 @@ interface ServiceWiseSalesData {
   summary: { total_revenue: number; total_orders: number; avg_order_value: number };
 }
 
-const columns: DataTableColumn<ServiceRow>[] = [
-  { key: 'order_type', header: 'Order Type' },
-  { key: 'order_count', header: '# Orders', align: 'right' },
-  { key: 'revenue', header: 'Revenue', render: (r) => formatCurrency(r.revenue), align: 'right' },
-  { key: 'avg_order_value', header: 'Avg Order Value', render: (r) => formatCurrency(r.avg_order_value), align: 'right' },
-  { key: 'percentage_of_total', header: '% of Total', render: (r) => `${r.percentage_of_total}%`, align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<ServiceRow>[] => [
+  { key: 'order_type', header: __('Order Type') },
+  { key: 'order_count', header: __('# Orders'), align: 'right' },
+  { key: 'revenue', header: __('Revenue'), render: (r) => formatCurrency(r.revenue), align: 'right' },
+  { key: 'avg_order_value', header: __('Avg Order Value'), render: (r) => formatCurrency(r.avg_order_value), align: 'right' },
+  { key: 'percentage_of_total', header: __('% of Total'), render: (r) => `${r.percentage_of_total}%`, align: 'right' },
 ];
 
 export function ServiceWiseSales() {
@@ -51,7 +52,7 @@ export function ServiceWiseSales() {
       });
       setData(res.message ?? (res as unknown as ServiceWiseSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -65,9 +66,9 @@ export function ServiceWiseSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Service Wise Sales</h1>
+          <h1 className="text-xl font-semibold">{__('Service Wise Sales')}</h1>
           <p className="text-sm text-muted-foreground">
-            Revenue by order type {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Revenue by order type')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -80,18 +81,18 @@ export function ServiceWiseSales() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard
-              label="Total Revenue"
+              label={__('Total Revenue')}
               value={formatCurrency(data.summary.total_revenue)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
-            <StatCard label="Total Orders" value={data.summary.total_orders} icon={<Receipt className="w-4 h-4" />} />
+            <StatCard label={__('Total Orders', null, 'Restaurant')} value={data.summary.total_orders} icon={<Receipt className="w-4 h-4" />} />
             <StatCard
-              label="Avg Order Value"
+              label={__('Avg Order Value')}
               value={formatCurrency(data.summary.avg_order_value)}
               icon={<TrendingUp className="w-4 h-4" />}
             />
@@ -100,14 +101,14 @@ export function ServiceWiseSales() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <div className="lg:col-span-2">
               <PieChartCard
-                title="Revenue by Order Type"
+                title={__('Revenue by Order Type')}
                 data={data.by_service_type}
                 dataKey="revenue"
                 nameKey="order_type"
               />
             </div>
             <div className="lg:col-span-3">
-              <DataTable columns={columns} rows={data.by_service_type} isLoading={isLoading} />
+              <DataTable columns={getColumns()} rows={data.by_service_type} isLoading={isLoading} />
             </div>
           </div>
         </>

@@ -20,7 +20,7 @@
         </h2>
 
         <p class="text-sm text-gray-500">
-          Production Unit
+          {{ __("Production Unit") }}
         </p>
       </div>
     </div>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="text-xs text-gray-500 mt-1">
-          Active
+          {{ __("Active") }}
         </div>
       </div>
 
@@ -46,7 +46,7 @@
         </div>
 
         <div class="text-xs text-gray-500 mt-1">
-          Served
+          {{ __("Served") }}
         </div>
       </div>
 
@@ -57,7 +57,7 @@
         </div>
 
         <div class="text-xs text-gray-500 mt-1">
-          Total
+          {{ __("Total") }}
         </div>
       </div>
 
@@ -66,7 +66,7 @@
     <!-- Footer -->
     <div class="mt-6 border-t pt-4">
       <span class="text-xs text-gray-400">
-        Click to view KOTs
+        {{ __("Click to view KOTs") }}
       </span>
     </div>
 

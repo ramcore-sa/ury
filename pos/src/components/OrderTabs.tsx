@@ -173,7 +173,7 @@ const OrderTabs = ({ disabled }: { disabled?: boolean }) => {
                     ? 'text-primary-500 hover:text-primary-700 hover:bg-primary-100'
                     : 'text-gray-400 hover:text-gray-700 hover:bg-gray-200'
                 )}
-                title="Close order"
+                title={t('cart.close_order')}
               >
                 <X className="w-3 h-3" />
               </button>
@@ -187,7 +187,7 @@ const OrderTabs = ({ disabled }: { disabled?: boolean }) => {
           className="h-8 w-8 flex-shrink-0 text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-200/50 ml-1"
           onClick={() => !disabled && addTab()}
           disabled={disabled}
-          title="Add new order"
+          title={t('cart.add_new_order')}
         >
           <Plus className="w-4 h-4" />
         </Button>
@@ -197,12 +197,12 @@ const OrderTabs = ({ disabled }: { disabled?: boolean }) => {
         <DialogContent size="sm" showCloseButton onClose={() => setConfirmCloseTabId(null)}>
           <DialogHeader>
             <DialogTitle>
-              {closeActionType === 'discard' ? 'Remove Cart' : 'Unsaved Changes'}
+              {closeActionType === 'discard' ? t('cart.remove_cart') : t('cart.unsaved_changes')}
             </DialogTitle>
             <DialogDescription>
               {closeActionType === 'discard'
-                ? 'This cart contains items. Do you want to remove it?'
-                : 'This cart has unsaved changes. Please verify.'}
+                ? t('cart.remove_cart_confirm')
+                : t('cart.unsaved_changes_hint')}
             </DialogDescription>
           </DialogHeader>
 
@@ -221,7 +221,7 @@ const OrderTabs = ({ disabled }: { disabled?: boolean }) => {
                     }
                   }}
                 >
-                  Remove
+                  {t('common.remove')}
                 </Button>
               </>
             ) : (

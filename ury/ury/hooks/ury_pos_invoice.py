@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 from datetime import datetime
 from frappe.utils import now_datetime, get_time, now, get_datetime
 from ury.ury.doctype.ury_order.ury_order import release_merge_cluster_tables
@@ -180,7 +181,7 @@ def validate_price_list(doc, method):
                 )
             
             if not price_list:
-                frappe.throw(f"Price list for customer {doc.customer} in branch {doc.branch} not found in Aggregator Settings.")
+                frappe.throw(_("Price list for customer {0} in branch {1} not found in Aggregator Settings.").format(doc.customer, doc.branch))
                 
             doc.selling_price_list = price_list
             

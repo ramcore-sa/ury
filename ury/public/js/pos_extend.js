@@ -311,7 +311,7 @@ frappe.pages["point-of-sale"].on_page_load = function (wrapper) {
         );
         commentButton.on("click", () => {
           let d = new frappe.ui.Dialog({
-            title: "Enter Comment",
+            title: __("Enter Comment"),
             fields: [
               {
                 label: "Comment",
@@ -320,7 +320,7 @@ frappe.pages["point-of-sale"].on_page_load = function (wrapper) {
                 default: cur_frm.order_comments,
               },
             ],
-            primary_action_label: "Add",
+            primary_action_label: __("Add"),
             primary_action: (values) => {
               cur_frm.order_comments = values.comment;
               d.hide();

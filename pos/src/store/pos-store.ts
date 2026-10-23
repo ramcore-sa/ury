@@ -8,6 +8,7 @@ import { getCustomerGroups, getCustomerTerritories } from '../lib/customer-api';
 import { DEFAULT_ORDER_TYPE, OrderType } from '../data/order-types';
 import { getTableOrder, TableOrder } from '../lib/order-api';
 import { getPaymentModes } from '../lib/payment-api';
+import { t } from '../i18n';
 
 // Constants
 const MAX_QUANTITY = 99;
@@ -339,7 +340,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
           categoriesResult.status === 'rejected' ||
           paymentModesResult.status === 'rejected') {
         set({ 
-          error: 'Failed to initialize app. Please refresh the page.',
+          error: t('errors.failed_initialize'),
           isInitializing: false 
         });
         return;
@@ -348,7 +349,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       set({ isInitializing: false });
     } catch (error) {
       set({ 
-        error: 'Failed to initialize app. Please refresh the page.',
+        error: t('errors.failed_initialize'),
         isInitializing: false 
       });
     }
@@ -386,7 +387,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
     } catch (error) {
       console.error('Error fetching POS profile:', error);
       set({ 
-        error: 'Failed to fetch POS profile',
+        error: t('errors.failed_fetch_profile'),
         profileLoading: false 
       });
     }
@@ -432,7 +433,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
 
       set({ menuItems });
     } catch (error) {
-      set({ error: 'Failed to load menu items' });
+      set({ error: t('common.error_loading_menu_items') });
       console.error('Error loading menu items:', error);
     } finally {
       set({ menuLoading: false });
@@ -455,7 +456,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
 
       set({ menuItems, menuLoading: false });
     } catch (error) {
-      set({ error: 'Failed to load aggregator menu', menuLoading: false });
+      set({ error: t('errors.failed_load_aggregator_menu'), menuLoading: false });
       console.error('Error loading aggregator menu:', error);
     }
   },
@@ -473,7 +474,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       sessionStorage.setItem('menuCategories', JSON.stringify(courses));
       set({ categories: courses });
     } catch (error) {
-      set({ error: 'Failed to load menu categories' });
+      set({ error: t('errors.failed_load_categories') });
       throw error;
     }
   },
@@ -494,7 +495,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
   addToOrder: async (item: OrderItem) => {
     try {
       if (!get().validateQuantity(item.quantity)) {
-        throw new CartError(`Quantity must be between ${MIN_QUANTITY} and ${MAX_QUANTITY}`);
+        throw new CartError(t('errors.quantity_range', { min: MIN_QUANTITY, max: MAX_QUANTITY }));
       }
 
       const uniqueId = generateUniqueId(item);
@@ -506,7 +507,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
         const newComment = item.comment !== undefined ? item.comment : existingItem?.comment || "";
 
         if (!get().validateQuantity(newQuantity)) {
-          throw new CartError(`Cannot add item. Total quantity would exceed ${MAX_QUANTITY}`);
+          throw new CartError(t('errors.quantity_exceeds', { max: MAX_QUANTITY }));
         }
 
         const newOrders = [...get().activeOrders];
@@ -525,7 +526,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       if (error instanceof CartError) {
         set({ error: error.message });
       } else {
-        set({ error: 'Failed to add item to cart' });
+        set({ error: t('errors.failed_add_to_cart') });
       }
     }
   },
@@ -535,14 +536,14 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       const newOrders = get().activeOrders.filter(item => item.uniqueId !== uniqueId);
       set({ activeOrders: newOrders });
     } catch (error) {
-      set({ error: 'Failed to remove item from cart' });
+      set({ error: t('errors.failed_remove_from_cart') });
     }
   },
 
   updateQuantity: async (uniqueId: string, quantity: number) => {
     try {
       if (!get().validateQuantity(quantity)) {
-        throw new CartError(`Quantity must be between ${MIN_QUANTITY} and ${MAX_QUANTITY}`);
+        throw new CartError(t('errors.quantity_range', { min: MIN_QUANTITY, max: MAX_QUANTITY }));
       }
 
       const newOrders = get().activeOrders.map(item =>
@@ -553,7 +554,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       if (error instanceof CartError) {
         set({ error: error.message });
       } else {
-        set({ error: 'Failed to update quantity' });
+        set({ error: t('errors.failed_update_quantity') });
       }
     }
   },
@@ -569,7 +570,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
     try {
       set({ activeOrders: [] });
     } catch (error) {
-      set({ error: 'Failed to clear cart' });
+      set({ error: t('errors.failed_clear_cart') });
     }
   },
 
@@ -785,7 +786,7 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       }
     } catch (error) {
       set({
-        error: 'Failed to load table order',
+        error: t('errors.failed_load_table_order'),
         tableOrder: null,
         activeOrders: [],
         selectedCustomer: null,

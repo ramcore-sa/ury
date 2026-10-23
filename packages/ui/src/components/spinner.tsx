@@ -1,4 +1,5 @@
 import { cn } from '../lib/cn';
+import { __ } from '@ury/core';
 
 interface SpinnerProps {
   className?: string;
@@ -7,7 +8,7 @@ interface SpinnerProps {
 }
 
 export function Spinner({ className, message, hideMessage = false}: SpinnerProps) {
-  const displayMessage = message ?? 'Loading...';
+  const displayMessage = message ?? __('Loading...');
   return (
     <div className="flex items-center justify-center min-h-[inherit]" role="status" aria-live="polite">
       <div className="text-center">

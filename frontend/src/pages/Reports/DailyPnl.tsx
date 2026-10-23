@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { Card, CardContent, CardHeader, CardTitle, StatCard } from '@ury/ui';
 import { IndianRupee, TrendingUp, TrendingDown, Percent, AlertTriangle, ChevronDown } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -62,8 +62,9 @@ function MissingPricesWarning({ sections }: { sections: MissingPriceSection[] })
       >
         <span className="flex items-center gap-2 font-medium">
           <AlertTriangle className="w-4 h-4 shrink-0" />
-          Buying price not set for {totalItems} item{totalItems === 1 ? '' : 's'} — Cost of Goods may be
-          understated
+          {totalItems === 1
+            ? __('Buying price not set for 1 item — Cost of Goods may be understated')
+            : __('Buying price not set for {0} items — Cost of Goods may be understated', [totalItems])}
         </span>
         <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </button>
@@ -84,7 +85,7 @@ function MissingPricesWarning({ sections }: { sections: MissingPriceSection[] })
             </div>
           ))}
           <p className="text-xs text-amber-700">
-            Update these item prices, then submit the document again for accurate Cost of Goods.
+            {__('Update these item prices, then submit the document again for accurate Cost of Goods.')}
           </p>
         </div>
       )}
@@ -164,7 +165,7 @@ export function DailyPnl() {
       });
       setData(res.message ?? (res as unknown as DailyPnlData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -181,8 +182,8 @@ export function DailyPnl() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Daily P&amp;L</h1>
-          <p className="text-sm text-muted-foreground">Full daily profit &amp; loss breakdown</p>
+          <h1 className="text-xl font-semibold">{__('Daily P&L')}</h1>
+          <p className="text-sm text-muted-foreground">{__('Full daily profit & loss breakdown')}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-48">
@@ -228,10 +229,10 @@ export function DailyPnl() {
       )}
 
       {isLoading ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : !data?.exists ? (
         <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          No submitted Daily P&amp;L exists for this branch/date. It must be created and submitted in Desk first.
+          {__('No submitted Daily P&L exists for this branch/date. It must be created and submitted in Desk first.')}
         </div>
       ) : (
         <>
@@ -257,24 +258,24 @@ export function DailyPnl() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label="Gross Sales"
+              label={__('Gross Sales')}
               value={formatCurrency(summaryMap.get('gross_sales')?.amount ?? 0)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
             <StatCard
-              label="Net Sales"
+              label={__('Net Sales')}
               value={formatCurrency(summaryMap.get('net_sales')?.amount ?? 0)}
               icon={<TrendingUp className="w-4 h-4" />}
             />
             <StatCard
-              label="Gross Profit"
+              label={__('Gross Profit')}
               value={`${formatCurrency(summaryMap.get('gross_profit')?.amount ?? 0)} (${Number(
                 summaryMap.get('gross_profit')?.percent ?? 0
               ).toFixed(1)}%)`}
               icon={<Percent className="w-4 h-4" />}
             />
             <StatCard
-              label="Net Profit"
+              label={__('Net Profit')}
               value={`${formatCurrency(summaryMap.get('net_profit')?.amount ?? 0)} (${Number(
                 summaryMap.get('net_profit')?.percent ?? 0
               ).toFixed(1)}%)`}
@@ -290,12 +291,13 @@ export function DailyPnl() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">P&amp;L Statement</CardTitle>
+              <CardTitle className="text-base">{__('P&L Statement')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
               {rest.map((r) => (
                 <div key={r.key} className="flex items-center justify-between text-sm py-1.5 border-b last:border-0">
-                  <span>{r.label}</span>
+                  {/* Summary labels are fixed English from report_api.financial.SUMMARY_FIELDS. */}
+                  <span>{__(r.label)}</span>
                   <span className="font-medium">
                     {formatCurrency(r.amount)}{' '}
                     <span className="text-xs text-muted-foreground">({Number(r.percent).toFixed(1)}%)</span>
@@ -306,10 +308,10 @@ export function DailyPnl() {
           </Card>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-            <BreakupTable title="Direct Expenses" rows={data.direct_expenses_breakup ?? []} className="self-start" />
-            <BreakupTable title="Employee Costs" rows={data.employee_costs_breakup ?? []} className="self-start" />
+            <BreakupTable title={__('Direct Expenses')} rows={data.direct_expenses_breakup ?? []} className="self-start" />
+            <BreakupTable title={__('Employee Costs')} rows={data.employee_costs_breakup ?? []} className="self-start" />
             <BreakupTable
-              title="Indirect Expenses"
+              title={__('Indirect Expenses')}
               rows={data.indirect_expenses_breakup ?? []}
               className="lg:col-span-2"
               twoColumn
@@ -319,17 +321,17 @@ export function DailyPnl() {
           {data.cost_of_goods && data.cost_of_goods.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Cost of Goods Sold</CardTitle>
+                <CardTitle className="text-base">{__('Cost of Goods Sold')}</CardTitle>
               </CardHeader>
               <CardContent className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-muted-foreground border-b">
-                      <th className="py-1.5 pr-4">Item</th>
-                      <th className="py-1.5 pr-4">Group</th>
-                      <th className="py-1.5 pr-4">Qty</th>
-                      <th className="py-1.5 pr-4">Buying Price</th>
-                      <th className="py-1.5">Amount</th>
+                      <th className="py-1.5 pr-4">{__('Item')}</th>
+                      <th className="py-1.5 pr-4">{__('Group')}</th>
+                      <th className="py-1.5 pr-4">{__('Qty')}</th>
+                      <th className="py-1.5 pr-4">{__('Buying Price')}</th>
+                      <th className="py-1.5">{__('Amount')}</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 
 export const useAlert = defineStore("alert", {
   state: () => ({
@@ -47,14 +48,17 @@ export const useAlert = defineStore("alert", {
 
         const heading = document.createElement("h2");
         heading.classList.add("text-base", "font-semibold", "mb-4");
-        heading.textContent = title;
+        // Callers pass fixed English ("Message", "OK", a validation sentence)
+        // or a message the server already translated. Translating here covers
+        // every caller at once; a server message just has no catalogue entry.
+        heading.textContent = __(title);
 
         const divider = document.createElement("hr");
         divider.classList.add("my-6", "border-t", "border-gray-300");
 
         const messageParagraph = document.createElement("p");
         messageParagraph.classList.add("mb-4", "text-justify", "text-sm");
-        messageParagraph.textContent = message;
+        messageParagraph.textContent = __(message);
 
         const closeButton = document.createElement("button");
         closeButton.classList.add(
@@ -66,7 +70,7 @@ export const useAlert = defineStore("alert", {
           "py-2",
           "rounded-md"
         );
-        closeButton.textContent = buttonText;
+        closeButton.textContent = __(buttonText);
 
         modalContent.appendChild(heading);
         modalContent.appendChild(divider);
