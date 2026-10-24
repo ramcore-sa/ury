@@ -3,6 +3,7 @@ import { useKotErrorChannels } from '../lib/realtime';
 import { showToast } from '@ury/ui';
 import { usePOSStore } from '../store/pos-store';
 import { getProductionUnitsForBranch } from '../lib/production-api';
+import { t } from '../i18n';
 
 /**
  * KotAlertListener: A headless component that subscribes to all KOT error channels
@@ -64,7 +65,7 @@ const KotAlertListener: React.FC = () => {
     const message =
       (payload?.message as string) ||
       (payload?.error as string) ||
-      'An unknown KOT error occurred';
+      t('errors.unknown_kot_error');
 
     showToast.error(message);
   }, []);

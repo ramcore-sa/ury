@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 import { useInvoiceDataStore } from "./invoiceData.js";
 import { useTableStore } from "./Table.js";
 import { useNotifications } from "./Notification.js";
@@ -382,7 +383,7 @@ export const useMenuStore = defineStore("menu", {
       if (itemIndexExists) {
         item.comment = "";
         this.cart[itemIndex].qty++;
-        let message = `${item.item}'s Qty updated to ${item.qty} in Cart`;
+        let message = __("{0} quantity updated to {1} in the cart", [item.item, item.qty]);
         this.notification.createNotification(message);
       } else {
         item.comment = "";
@@ -397,8 +398,8 @@ export const useMenuStore = defineStore("menu", {
         this.cart = this.cart.filter((obj) => obj.qty > 0);
         let message =
           item.qty > 0
-            ? `${item.item}'s Qty Reduced from Cart Total Qty=${item.qty}`
-            : `${item.item} has been removed from Cart`;
+            ? __("{0} quantity reduced. Total in cart: {1}", [item.item, item.qty])
+            : __("{0} has been removed from the cart", [item.item]);
         this.notification.createNotification(message);
       }
     },

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn, Button } from '@ury/ui';
 import { Package, IndianRupee, Hash, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -25,13 +25,14 @@ interface ItemWiseSalesData {
 
 const PAGE_SIZE = 50;
 
-const columns: DataTableColumn<ItemRow>[] = [
-  { key: 'item_name', header: 'Item' },
-  { key: 'item_group', header: 'Group', render: (r) => r.item_group || '—' },
-  { key: 'qty', header: 'Qty', align: 'right' },
-  { key: 'amount', header: 'Amount', render: (r) => formatCurrency(r.amount), align: 'right' },
-  { key: 'avg_price', header: 'Avg Price', render: (r) => formatCurrency(r.avg_price), align: 'right' },
-  { key: 'pct_of_total_amount', header: '% of Total', render: (r) => `${r.pct_of_total_amount}%`, align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<ItemRow>[] => [
+  { key: 'item_name', header: __('Item') },
+  { key: 'item_group', header: __('Group'), render: (r) => r.item_group || '—' },
+  { key: 'qty', header: __('Qty'), align: 'right' },
+  { key: 'amount', header: __('Amount'), render: (r) => formatCurrency(r.amount), align: 'right' },
+  { key: 'avg_price', header: __('Avg Price'), render: (r) => formatCurrency(r.avg_price), align: 'right' },
+  { key: 'pct_of_total_amount', header: __('% of Total'), render: (r) => `${r.pct_of_total_amount}%`, align: 'right' },
 ];
 
 export function ItemWiseSales() {
@@ -61,7 +62,7 @@ export function ItemWiseSales() {
       });
       setData(res.message ?? (res as unknown as ItemWiseSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -81,15 +82,15 @@ export function ItemWiseSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Item Wise Sales</h1>
+          <h1 className="text-xl font-semibold">{__('Item Wise Sales')}</h1>
           <p className="text-sm text-muted-foreground">
-            Best-selling items {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Best-selling items')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <input
             type="text"
-            placeholder="Search items..."
+            placeholder={__('Search items...')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border border-input rounded-md px-3 py-1.5 text-sm w-40"
@@ -106,26 +107,26 @@ export function ItemWiseSales() {
 
       {data && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatCard label="Unique Items Sold" value={data.summary.unique_items} icon={<Package className="w-4 h-4" />} />
-          <StatCard label="Total Qty" value={data.summary.total_qty} icon={<Hash className="w-4 h-4" />} />
+          <StatCard label={__('Unique Items Sold')} value={data.summary.unique_items} icon={<Package className="w-4 h-4" />} />
+          <StatCard label={__('Total Qty')} value={data.summary.total_qty} icon={<Hash className="w-4 h-4" />} />
           <StatCard
-            label="Total Amount"
+            label={__('Total Amount')}
             value={formatCurrency(data.summary.total_amount)}
             icon={<IndianRupee className="w-4 h-4" />}
           />
         </div>
       )}
 
-      <DataTable columns={columns} rows={data?.items ?? []} isLoading={isLoading} />
+      <DataTable columns={getColumns()} rows={data?.items ?? []} isLoading={isLoading} />
 
       {pagination && pagination.total_pages > 1 && (
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            Page {pagination.page} of {pagination.total_pages}
+            {__('Page {0} of {1}', [pagination.page, pagination.total_pages])}
           </span>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-              <ChevronLeft className="w-4 h-4" /> Prev
+              <ChevronLeft className="w-4 h-4" /> {__('Prev')}
             </Button>
             <Button
               variant="outline"
@@ -133,7 +134,7 @@ export function ItemWiseSales() {
               disabled={page >= pagination.total_pages}
               onClick={() => setPage((p) => p + 1)}
             >
-              Next <ChevronRight className="w-4 h-4" />
+              {__('Next')} <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>

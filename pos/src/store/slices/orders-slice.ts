@@ -3,6 +3,7 @@ import { OrderType } from '../../data/order-types';
 import { call } from '@ury/core';
 import { getPOSInvoices, getPOSInvoiceItems, getSplitGroup, mapSplitGroupInvoiceToPOSInvoice, POSInvoiceItem, POSInvoiceTax } from '../../lib/invoice-api';
 import { searchPosInvoice } from '../../lib/invoice-api';
+import { t } from '../../i18n';
 
 export interface POSInvoice {
   name: string;
@@ -133,7 +134,7 @@ export const createOrdersSlice: StateCreator<
       });
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to fetch orders',
+        error: error instanceof Error ? error.message : t('errors.failed_fetch_invoices'),
         orderLoading: false 
       });
     }
@@ -189,7 +190,7 @@ export const createOrdersSlice: StateCreator<
       }));
     } catch (error) {
       set({ 
-        selectedOrderError: error instanceof Error ? error.message : 'Failed to fetch order details',
+        selectedOrderError: error instanceof Error ? error.message : t('errors.failed_fetch_order_details'),
         selectedOrderLoading: false 
       });
     }
@@ -219,7 +220,7 @@ export const createOrdersSlice: StateCreator<
       set({ orderLoading: false });
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to update order status',
+        error: error instanceof Error ? error.message : t('errors.failed_update_order_status'),
         orderLoading: false 
       });
     }

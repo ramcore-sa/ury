@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Package, IndianRupee, Search } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -26,11 +26,12 @@ interface EmployeeItemWiseSalesData {
   summary: { total_qty: number; total_amount: number };
 }
 
-const columns: DataTableColumn<ItemRow>[] = [
-  { key: 'item_name', header: 'Item' },
-  { key: 'item_group', header: 'Group', render: (r) => r.item_group || '—' },
-  { key: 'qty', header: 'Qty', align: 'right' },
-  { key: 'amount', header: 'Amount', render: (r) => formatCurrency(r.amount), align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<ItemRow>[] => [
+  { key: 'item_name', header: __('Item') },
+  { key: 'item_group', header: __('Group'), render: (r) => r.item_group || '—' },
+  { key: 'qty', header: __('Qty'), align: 'right' },
+  { key: 'amount', header: __('Amount'), render: (r) => formatCurrency(r.amount), align: 'right' },
 ];
 
 export function EmployeeItemWiseSales() {
@@ -76,7 +77,7 @@ export function EmployeeItemWiseSales() {
       );
       setData(res.message ?? (res as unknown as EmployeeItemWiseSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -90,8 +91,8 @@ export function EmployeeItemWiseSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Employee Item Wise Sales</h1>
-          <p className="text-sm text-muted-foreground">Item breakdown per employee</p>
+          <h1 className="text-xl font-semibold">{__('Employee Item Wise Sales')}</h1>
+          <p className="text-sm text-muted-foreground">{__('Item breakdown per employee')}</p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
       </div>
@@ -101,7 +102,7 @@ export function EmployeeItemWiseSales() {
           <Search className="w-4 h-4 text-muted-foreground shrink-0" />
           <input
             type="text"
-            placeholder="Search employee by name..."
+            placeholder={__('Search employee by name...')}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -137,22 +138,22 @@ export function EmployeeItemWiseSales() {
       )}
 
       {!selectedEmployee && !error && (
-        <div className="text-sm text-muted-foreground">Search and select an employee to view their item breakdown.</div>
+        <div className="text-sm text-muted-foreground">{__('Search and select an employee to view their item breakdown.')}</div>
       )}
 
-      {isLoading && <div className="text-sm text-muted-foreground">Loading...</div>}
+      {isLoading && <div className="text-sm text-muted-foreground">{__('Loading...')}</div>}
 
       {data && !isLoading && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard label="Total Qty" value={data.summary.total_qty} icon={<Package className="w-4 h-4" />} />
+            <StatCard label={__('Total Qty')} value={data.summary.total_qty} icon={<Package className="w-4 h-4" />} />
             <StatCard
-              label="Total Amount"
+              label={__('Total Amount')}
               value={formatCurrency(data.summary.total_amount)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
           </div>
-          <DataTable columns={columns} rows={data.items} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.items} isLoading={isLoading} />
         </>
       )}
     </div>

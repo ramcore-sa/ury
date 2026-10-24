@@ -9,3 +9,4 @@ export { formatCurrency, formatCompactCurrency, formatInvoiceTime, flt } from '.
 export { initPrinting, loadQzPrinter, disconnectQzPrinter, printWithQz } from './print/qz';
 export { validateFieldValue } from './utils/validateField';
 export type { ValidationMessages } from './utils/validateField';
+export { __, loadTranslations, getTranslation } from './i18n';

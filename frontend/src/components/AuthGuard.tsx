@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { Spinner } from '@ury/ui';
 import { useAuth } from '../store/useAuth';
 
@@ -11,7 +12,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen">
-        <Spinner message="Loading..." />
+        <Spinner message={__('Loading...')} />
       </div>
     );
   }
@@ -21,9 +22,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-red-600 text-xl mb-4">⚠️</div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Access Denied</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">{__('Access Denied')}</h2>
           <p className="text-gray-600">
-            {error || 'Please log in to access this section.'}
+            {error || __('Please log in to access this section.')}
           </p>
         </div>
       </div>
@@ -35,8 +36,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-amber-600 text-xl mb-4">🔒</div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Permission Required</h2>
-          <p className="text-gray-600">This section is restricted to Managers.</p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">{__('Permission Required')}</h2>
+          <p className="text-gray-600">{__('This section is restricted to Managers.')}</p>
         </div>
       </div>
     );

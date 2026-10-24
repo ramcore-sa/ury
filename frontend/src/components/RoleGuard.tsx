@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Spinner } from '@ury/ui';
-import { getLoggedUser, getUserRoles } from '@ury/core';
+import { getLoggedUser, getUserRoles, __ } from '@ury/core';
 
 interface RoleGuardProps {
   children: React.ReactNode;
@@ -48,9 +48,9 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ children }) => {
       <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
         <Card className="w-full max-w-md">
           <div className="p-6 text-center">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Access Denied</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">{__('Access Denied')}</h2>
             <p className="text-gray-600">
-              You need the URY Manager role to access this section.
+              {__('You need the URY Manager role to access this section.')}
             </p>
           </div>
         </Card>

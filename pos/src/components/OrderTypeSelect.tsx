@@ -83,7 +83,7 @@ const OrderTypeSelect = ({ disabled }: OrderTypeSelectProps) => {
                 isDisabled && 'opacity-50 cursor-not-allowed'
               )}
               disabled={isDisabled}
-              title={isDineIn && isRestrictedFromTableOrders ? t('errors.dine_in_restricted') || 'Dine In is not available for your role' : undefined}
+              title={isDineIn && isRestrictedFromTableOrders ? t('errors.dine_in_restricted') : undefined}
             >
               <Icon className="w-4 h-4" />
               {t(`order_types.${value.toLowerCase().replace(/ /g, '_')}`)}

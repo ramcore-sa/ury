@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { formatCurrency } from '@ury/core'
+import { formatCurrency, __ } from '@ury/core'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ury/ui'
 import { useIdleReset } from '../hooks/useIdleReset'
 import { useOrderingSession } from '../hooks/useOrderingSession'
@@ -58,7 +58,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
   const idleResetTimerRef = useRef<ReturnType<typeof setTimeout>>()
 
   function handleReset() {
-    if (window.confirm('Start a new order? Current cart will be cleared.')) {
+    if (window.confirm(__('Start a new order? Current cart will be cleared.'))) {
       resetSession()
     }
   }
@@ -89,7 +89,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
       const key = item.course ?? ALL_CATEGORY
       if (key === ALL_CATEGORY) continue
       if (!seen.has(key)) {
-        seen.set(key, item.course_label ?? item.course ?? 'Other')
+        seen.set(key, item.course_label ?? item.course ?? __('Other'))
       }
     }
     return Array.from(seen.entries()).map(([course, label]) => ({ course, label }))
@@ -103,7 +103,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        Loading menu…
+        {__('Loading menu…')}
       </div>
     )
   }
@@ -120,13 +120,13 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
     <div className="flex min-h-screen flex-col pb-24">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 px-6 py-4 backdrop-blur">
         <h1 className="text-2xl font-semibold">
-          {context?.table ? `Table ${context.table}` : 'Order for Pickup'}
+          {context?.table ? __('Table {0}', [context.table]) : __('Order for Pickup')}
         </h1>
         <button
           onClick={handleReset}
           className="rounded-md border px-3 py-2 text-sm font-medium text-muted-foreground"
         >
-          New Order
+          {__('New Order')}
         </button>
       </header>
 
@@ -136,7 +136,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
 
       {order && order.items.length > 0 && (
         <section className="mx-6 mt-4 rounded-lg border p-4">
-          <h2 className="mb-2 text-sm font-medium text-muted-foreground">Your order so far</h2>
+          <h2 className="mb-2 text-sm font-medium text-muted-foreground">{__('Your order so far')}</h2>
           <ul className="space-y-1 text-base">
             {order.items.map((row, idx) => (
               <li key={`${row.item_code}-${idx}`} className="flex justify-between">
@@ -146,7 +146,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
             ))}
           </ul>
           <div className="mt-2 flex justify-between border-t pt-2 text-base font-semibold">
-            <span>Total</span>
+            <span>{__('Total')}</span>
             <span>{order.grand_total}</span>
           </div>
           {context?.capabilities.customer_payment_enabled && !order.billed && (
@@ -155,7 +155,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
               disabled={payingOnline}
               onClick={payOnline}
             >
-              {payingOnline ? 'Starting payment…' : 'Pay Online'}
+              {payingOnline ? __('Starting payment…') : __('Pay Online')}
             </button>
           )}
           {context?.capabilities.request_bill_enabled && !order.billed && (
@@ -164,7 +164,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
               disabled={billRequested}
               onClick={handleRequestBill}
             >
-              {billRequested ? 'Bill requested — staff notified' : 'Request Bill'}
+              {billRequested ? __('Bill requested — staff notified') : __('Request Bill')}
             </button>
           )}
         </section>
@@ -172,7 +172,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
 
       <div className="flex flex-1 gap-4 px-6 pt-4">
         <nav
-          aria-label="Menu categories"
+          aria-label={__('Menu categories')}
           className="flex w-40 shrink-0 flex-col gap-2 self-start rounded-lg border p-2"
         >
           <button
@@ -183,7 +183,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
                 : 'text-foreground hover:bg-muted'
             }`}
           >
-            All Items
+            {__('All Items')}
           </button>
           {categories.map((category) => (
             <button
@@ -225,7 +225,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
                       <button
                         onClick={() => decrementCart(entry.item.item)}
                         className="h-8 w-8 rounded-full border text-base leading-none"
-                        aria-label={`Remove one ${entry.item.item_name}`}
+                        aria-label={__('Remove one {0}', [entry.item.item_name])}
                       >
                         −
                       </button>
@@ -233,7 +233,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
                       <button
                         onClick={() => addToCart(entry.item)}
                         className="h-8 w-8 rounded-full border text-base leading-none"
-                        aria-label={`Add one more ${entry.item.item_name}`}
+                        aria-label={__('Add one more {0}', [entry.item.item_name])}
                       >
                         +
                       </button>
@@ -260,7 +260,7 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
               disabled={submitting}
               className="rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground disabled:opacity-50"
             >
-              {submitting ? 'Placing…' : 'Place Order'}
+              {submitting ? __('Placing…') : __('Place Order')}
             </button>
           </div>
         </div>
@@ -269,14 +269,14 @@ function PortraitKioskLayout({ initialContext }: LayoutProps) {
       <Dialog open={showIdleWarning} onOpenChange={(open) => !open && handleStillHere()}>
         <DialogContent onClose={handleStillHere}>
           <DialogHeader>
-            <DialogTitle>Still there?</DialogTitle>
+            <DialogTitle>{__('Still there?')}</DialogTitle>
           </DialogHeader>
           <DialogFooter>
             <button
               onClick={handleStillHere}
               className="w-full rounded-md bg-primary py-3 text-base font-medium text-primary-foreground"
             >
-              I'm still here
+              {__("I'm still here")}
             </button>
           </DialogFooter>
         </DialogContent>

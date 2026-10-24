@@ -1,5 +1,5 @@
 import frappe
-
+from frappe import _
 from ury.ury.report_api.utils import (
 	date_list_cte,
 	get_business_day_condition,
@@ -49,7 +49,7 @@ def get_customer_data(customer, start_date, end_date, branch=None, page=1, page_
 	validate_date_range(start_date, end_date)
 
 	if not customer:
-		frappe.throw("customer is required.")
+		frappe.throw(_("customer is required."))
 
 	page = max(1, int(page))
 	page_size = max(1, min(int(page_size), 200))

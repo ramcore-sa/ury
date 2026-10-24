@@ -81,7 +81,7 @@ const TableView = () => {
         }
       } catch (e) {
         console.error(e);
-        setError('Failed to load rooms');
+        setError(t('errors.failed_load_rooms'));
       } finally {
         setLoadingRooms(false);
       }
@@ -150,7 +150,7 @@ const TableView = () => {
         setTablesCache((prev) => ({ ...prev, [roomName]: sortedTables }));
       } catch (e) {
         console.error(e);
-        setError('Failed to load tables');
+        setError(t('errors.failed_load_tables'));
         setTables([]);
       } finally {
         setLoadingTables(false);
@@ -169,7 +169,7 @@ const TableView = () => {
 
     // Check if user is restricted from taking table orders
     if (isUserRestrictedFromTableOrders(user, posProfile)) {
-      showToast.error(t('errors.dine_in_restricted') || 'Dine In is not available for your role');
+      showToast.error(t('errors.dine_in_restricted'));
       return;
     }
 
@@ -187,7 +187,7 @@ const TableView = () => {
     event.stopPropagation();
 
     if (!posProfile) {
-      showToast.error('POS profile not loaded yet');
+      showToast.error(t('errors.pos_profile_not_loaded'));
       return;
     }
 
@@ -197,7 +197,7 @@ const TableView = () => {
       const invoiceId = orderResponse.message?.name;
 
       if (!invoiceId) {
-        showToast.error('No active order found for this table');
+        showToast.error(t('errors.no_active_order'));
         return;
       }
 
@@ -209,10 +209,10 @@ const TableView = () => {
           posProfile.print_format
         ),
       });
-      showToast.success('Printed successfully');
+      showToast.success(t('success.printed'));
       await loadTables(table.restaurant_room, { useCache: false });
     } catch (error) {
-      showToast.error(error instanceof Error ? error.message : 'Failed to print order');
+      showToast.error(error instanceof Error ? error.message : t('errors.failed_print'));
     } finally {
       setPrintingTable(null);
     }
@@ -440,14 +440,14 @@ const TableView = () => {
               <div className="flex flex-wrap gap-2">
                 {loadingRooms && (
                   <div className="flex-1 min-w-[160px]">
-                    <Spinner message="Loading rooms..." />
+                    <Spinner message={t('common.loading_rooms')} />
                   </div>
                 )}
 
                 {!loadingRooms && !hasRooms && (
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
                     <AlertTriangle className="w-4 h-4" />
-                    No rooms found for this branch
+                    {t('tables.no_rooms_for_branch')}
                   </div>
                 )}
 

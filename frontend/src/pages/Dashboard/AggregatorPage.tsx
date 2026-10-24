@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useBranchContext } from '../../context/BranchContext';
 import { Plus, Store, Edit2 } from 'lucide-react';
 import { Card, Button, Input, Spinner, showToast, Dialog, DialogContent, DialogHeader, DialogTitle } from '@ury/ui';
-import { call } from '@ury/core';
+import { call, __ } from '@ury/core';
 import { SearchableSelect } from '../../components/common/SearchableSelect';
 
 interface AggregatorSetting {
@@ -183,11 +183,11 @@ export const AggregatorPage: React.FC = () => {
       await fetchDropdownOptions();
       setIsAddOpen(false);
       setNewAggregatorName('');
-      showToast.success('Aggregator created successfully');
+      showToast.success(__('Aggregator created successfully'));
     } catch (err: any) {
       console.error('Failed to create aggregator:', err);
       const errorMessage = err?.message || err?.responseJSON?.message || String(err);
-      showToast.error(`Failed to create aggregator: ${errorMessage}`);
+      showToast.error(__('Failed to create aggregator: {0}', [errorMessage]));
     } finally {
       setSaving(false);
     }
@@ -217,7 +217,7 @@ export const AggregatorPage: React.FC = () => {
     if (!branchToUpdate) return;
 
     if (!editForm.aggregator || !editForm.aggregator.trim()) {
-      showToast.error('Aggregator Name is required');
+      showToast.error(__('Aggregator Name is required'));
       return;
     }
 
@@ -232,7 +232,7 @@ export const AggregatorPage: React.FC = () => {
       mode_of_payment: editForm.mode_of_payment || '',
     };
     if (JSON.stringify(original) === JSON.stringify(current)) {
-      showToast.warning('No changes in document');
+      showToast.warning(__('No changes in document'));
       return;
     }
 
@@ -280,13 +280,13 @@ export const AggregatorPage: React.FC = () => {
         }
       });
 
-      showToast.success('Aggregator updated successfully');
+      showToast.success(__('Aggregator updated successfully'));
       setEditingIndex(null);
       await fetchBranchAggregators();
       await fetchDropdownOptions();
     } catch (err: any) {
       console.error('Failed to update aggregator:', err);
-      showToast.error(err?.message || 'Failed to update aggregator');
+      showToast.error(err?.message || __('Failed to update aggregator'));
     } finally {
       setSaving(false);
     }
@@ -304,7 +304,7 @@ export const AggregatorPage: React.FC = () => {
           disabled={!hasBranch}
         >
           <Plus className="w-4 h-4" />
-          <span>Add Aggregator</span>
+          <span>{__('Add Aggregator')}</span>
         </Button>
       </div>
 
@@ -318,9 +318,9 @@ export const AggregatorPage: React.FC = () => {
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <Store className="w-6 h-6 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">No Aggregators Found</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{__('No Aggregators Found')}</h3>
           <p className="text-gray-500 mb-6 max-w-sm">
-            Add aggregators like Zomato, Swiggy to configure aggregator settings.
+            {__('Add aggregators like Zomato, Swiggy to configure aggregator settings.')}
           </p>
           <Button
             onClick={handleOpenAddModal}
@@ -328,7 +328,7 @@ export const AggregatorPage: React.FC = () => {
             disabled={!hasBranch}
           >
             <Plus className="w-4 h-4" />
-            <span>Add Aggregator</span>
+            <span>{__('Add Aggregator')}</span>
           </Button>
         </Card>
       ) : (
@@ -336,10 +336,10 @@ export const AggregatorPage: React.FC = () => {
           <table className="w-full text-left text-sm text-gray-600">
             <thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
               <tr>
-                <th className="px-6 py-4">Aggregator</th>
-                <th className="px-6 py-4">Price List</th>
-                <th className="px-6 py-4">Mode of Payment</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4">{__('Aggregator')}</th>
+                <th className="px-6 py-4">{__('Price List')}</th>
+                <th className="px-6 py-4">{__('Mode of Payment')}</th>
+                <th className="px-6 py-4 text-right">{__('Actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -358,7 +358,7 @@ export const AggregatorPage: React.FC = () => {
                         size="sm"
                         onClick={() => handleEditAggregator(item, idx)}
                         className="text-gray-500 hover:text-primary p-1.5 h-8 w-8"
-                        title="Edit Aggregator"
+                        title={__('Edit Aggregator')}
                       >
                         <Edit2 className="w-4 h-4" />
                       </Button>
@@ -375,15 +375,15 @@ export const AggregatorPage: React.FC = () => {
       <Dialog open={isAddOpen} onOpenChange={(open) => !open && setIsAddOpen(false)}>
         <DialogContent className="max-w-md bg-white p-6 rounded-xl border border-gray-200 shadow-xl" onClose={() => setIsAddOpen(false)}>
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-gray-900">Add Aggregator</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-gray-900">{__('Add Aggregator')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleCreateAggregator} className="space-y-4 text-sm mt-4">
             <div>
               <label className="block font-semibold text-gray-700 mb-1.5">
-                Aggregator Name <span className="text-red-500">*</span>
+                {__('Aggregator Name')} <span className="text-red-500">*</span>
               </label>
               <Input
-                placeholder="e.g. Swiggy, Zomato"
+                placeholder={__('e.g. Swiggy, Zomato')}
                 value={newAggregatorName}
                 onChange={(e) => setNewAggregatorName(e.target.value)}
                 required
@@ -392,10 +392,10 @@ export const AggregatorPage: React.FC = () => {
 
             <div className="pt-6 flex justify-end gap-3 border-t mt-6 border-gray-100">
               <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)} disabled={saving} className="font-semibold">
-                Cancel
+                {__('Cancel')}
               </Button>
               <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
-                <span>Save</span>
+                <span>{__('Save')}</span>
               </Button>
             </div>
           </form>
@@ -406,12 +406,12 @@ export const AggregatorPage: React.FC = () => {
       <Dialog open={editingIndex !== null} onOpenChange={(open) => !open && setEditingIndex(null)}>
         <DialogContent className="max-w-md bg-white p-6 rounded-xl border border-gray-200 shadow-xl" onClose={() => setEditingIndex(null)}>
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-gray-900">Edit Aggregator</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-gray-900">{__('Edit Aggregator')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSaveEdit} className="space-y-4 text-sm mt-4">
             <div>
               <label className="block font-semibold text-gray-700 mb-1.5">
-                Aggregator Name <span className="text-red-500">*</span>
+                {__('Aggregator Name')} <span className="text-red-500">*</span>
               </label>
               <Input
                 value={editForm.aggregator}
@@ -421,39 +421,39 @@ export const AggregatorPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1.5">Price List</label>
+              <label className="block font-semibold text-gray-700 mb-1.5">{__('Price List')}</label>
               <SearchableSelect
                 id="edit_price_list"
                 value={editForm.price_list || ''}
                 onChange={(_, val) => setEditForm(p => ({ ...p, price_list: val }))}
                 options={[
-                  { value: '', label: 'Select Price List...' },
+                  { value: '', label: __('Select Price List...') },
                   ...priceLists.map(pl => ({ value: pl.name, label: pl.name }))
                 ]}
-                placeholder="Select Price List..."
+                placeholder={__('Select Price List...')}
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1.5">Mode of Payment</label>
+              <label className="block font-semibold text-gray-700 mb-1.5">{__('Mode of Payment')}</label>
               <SearchableSelect
                 id="edit_mode_of_payment"
                 value={editForm.mode_of_payment || ''}
                 onChange={(_, val) => setEditForm(p => ({ ...p, mode_of_payment: val, mode_of_payments: val }))}
                 options={[
-                  { value: '', label: 'Select Mode of Payment...' },
+                  { value: '', label: __('Select Mode of Payment...') },
                   ...modesOfPayment.map(mop => ({ value: mop.name, label: mop.name }))
                 ]}
-                placeholder="Select Mode of Payment..."
+                placeholder={__('Select Mode of Payment...')}
               />
             </div>
 
             <div className="pt-6 flex justify-end gap-3 border-t mt-6 border-gray-100">
               <Button type="button" variant="outline" onClick={() => setEditingIndex(null)} disabled={saving} className="font-semibold">
-                Cancel
+                {__('Cancel')}
               </Button>
               <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
-                <span>Save</span>
+                <span>{__('Save')}</span>
               </Button>
             </div>
           </form>

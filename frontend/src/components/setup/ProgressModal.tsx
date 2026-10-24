@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import { useEffect, useRef } from 'react';
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
 import { subscribeRealtimeEvent } from '../../lib/realtimeClient';
@@ -68,7 +69,7 @@ export function ProgressModal({
       const payload = unwrapPayload(data);
 
       if (payload.fail_msg || payload.status === 'fail') {
-        onFailRef.current?.(payload.fail_msg || 'Setup failed');
+        onFailRef.current?.(payload.fail_msg || __('Setup failed'));
         return;
       }
 
@@ -117,7 +118,7 @@ export function ProgressModal({
         </div>
 
         <div className="px-10 pb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-1">Setting up your restaurant</h2>
+          <h2 className="text-2xl font-semibold text-foreground mb-1">{__('Setting up your restaurant')}</h2>
           <p className="text-sm text-muted-foreground mb-6">
             {description}
           </p>
@@ -139,7 +140,8 @@ export function ProgressModal({
                     )}
                   </div>
                   <span className={`text-sm ${isActive ? 'font-medium text-gray-900' : isDone ? 'text-foreground' : 'text-gray-400'}`}>
-                    {step}
+                    {/* Steps are module-level English constants, translated at render. */}
+                    {__(step)}
                   </span>
                 </div>
               );

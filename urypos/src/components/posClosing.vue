@@ -2,7 +2,7 @@
   <div class="mt-10 flex items-center justify-between">
     <div class="flex items-center">
       <h3 class="mr-3 text-lg font-semibold text-gray-900 dark:text-white">
-        POS Closing Entry
+        {{ __("POS Closing Entry") }}
       </h3>
       <span
         class="me-2 rounded px-2.5 py-0.5 text-sm font-medium"
@@ -16,7 +16,7 @@
             this.posClose.getBadgeType() === 'yellow',
         }"
       >
-        <span class="text-xs">{{ this.posClose.getBadgeText() }}</span>
+        <span class="text-xs">{{ __(this.posClose.getBadgeText()) }}</span>
       </span>
     </div>
     <div class="flex space-x-4">
@@ -25,19 +25,19 @@
         class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
         v-if="this.posClose.posClosing"
       >
-        Save
+        {{ __("Save") }}
       </button>
       <button
         v-if="this.posClose.posCloseSaved"
         @click="this.posClose.showSumbitPosCloseModal()"
         class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
       >
-        Submit
+        {{ __("Submit") }}
       </button>
     </div>
   </div>
   <h3 class="text-base font-normal text-gray-900 dark:text-white">
-    Period Details
+    {{ __("Period Details") }}
   </h3>
 
   <div class="mb-6 mt-6 grid gap-6 md:grid-cols-2">
@@ -45,7 +45,7 @@
       <label
         for="startDate"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Period Start Date</label
+        >{{ __("Period Start Date") }}</label
       >
       <input
         v-model="this.posClose.startDate"
@@ -62,7 +62,7 @@
         <label
           for="postingDate"
           class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >Posting Date</label
+          >{{ __("Posting Date") }}</label
         >
       </label>
       <input
@@ -76,7 +76,7 @@
       <label
         for="endDate"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Period End Date</label
+        >{{ __("Period End Date") }}</label
       >
 
       <date-picker
@@ -90,7 +90,7 @@
       <label
         for="postingTime"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Posting Time</label
+        >{{ __("Posting Time") }}</label
       >
       <date-picker
         v-model:value="this.posClose.postingTime"
@@ -106,7 +106,7 @@
           for="posOpen"
           class="block text-sm font-medium text-gray-900 dark:text-white"
         >
-          POS Opening Entry
+          {{ __("POS Opening Entry") }}
         </label>
         <input
           type="text"
@@ -138,7 +138,7 @@
   <hr class="my-6 border-t border-gray-300" />
 
   <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-    User Details
+    {{ __("User Details") }}
   </h3>
   <div class="mb-6 mt-5 grid gap-6 md:grid-cols-2">
     <div class="md:col-span-1">
@@ -146,7 +146,7 @@
         for="company"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
       >
-        Company
+        {{ __("Company") }}
       </label>
       <input
         type="text"
@@ -161,7 +161,7 @@
         <label
           for="posProfile"
           class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >POS Profile</label
+          >{{ __("POS Profile") }}</label
         >
         <input
           type="text"
@@ -175,7 +175,7 @@
         <label
           for="cashier"
           class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >Cashier</label
+          >{{ __("Cashier") }}</label
         >
         <input
           type="text"
@@ -190,11 +190,11 @@
   <div v-if="this.posClose.openingBalance.length > 0">
     <hr class="my-6 border-t border-gray-300" />
     <h3 class="mb-3 text-base font-semibold text-gray-900 dark:text-white">
-      Modes of Payment
+      {{ __("Modes of Payment") }}
     </h3>
 
     <h3 class="mb-3 text-sm font-normal text-gray-900 dark:text-white">
-      Payment Reconciliation
+      {{ __("Payment Reconciliation") }}
     </h3>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -203,9 +203,9 @@
           class="bg-gray-50 text-base font-semibold uppercase text-gray-900 dark:text-white"
         >
           <tr>
-            <th scope="col" class="px-6 py-3">Mode of Payment</th>
-            <th scope="col" class="px-6 py-3 text-center">Opening Amount</th>
-            <th scope="col" class="px-6 py-3 text-center">Closing Amount</th>
+            <th scope="col" class="px-6 py-3">{{ __("Mode of Payment") }}</th>
+            <th scope="col" class="px-6 py-3 text-center">{{ __("Opening Amount") }}</th>
+            <th scope="col" class="px-6 py-3 text-center">{{ __("Closing Amount") }}</th>
             <th scope="col" class="px-6 py-3"></th>
           </tr>
         </thead>
@@ -274,14 +274,14 @@
   </div>
   <hr class="my-6 border-t border-gray-300" />
 
-  <h3 class="text-base font-semibold text-gray-900 dark:text-white">Totals</h3>
+  <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ __("Totals") }}</h3>
   <div class="mb-6 mt-6 grid gap-6 md:grid-cols-2">
     <div>
       <label
         for="grandTotal"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
       >
-        Grand Total</label
+        {{ __("Grand Total") }}</label
       >
       <input
         type="text"
@@ -295,7 +295,7 @@
       <label
         for="totalInvoices"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Total Invoices</label
+        >{{ __("Total Invoices") }}</label
       >
       <input
         type="text"
@@ -309,7 +309,7 @@
       <label
         for="netTotak"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Net Total</label
+        >{{ __("Net Total") }}</label
       >
       <input
         type="text"
@@ -323,7 +323,7 @@
       <label
         for="totalQty"
         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        >Total Quantity</label
+        >{{ __("Total Quantity") }}</label
       >
       <input
         type="text"
@@ -342,8 +342,8 @@
     <div class="mt-3 flex items-center justify-center">
       <div class="w-full rounded-lg bg-white p-6 shadow-lg md:max-w-md">
         <div class="flex items-center justify-between">
-          <h3 class="text-xl text-gray-900 dark:text-white">Confirm</h3>
-          <span class="sr-only">Close</span>
+          <h3 class="text-xl text-gray-900 dark:text-white">{{ __("Confirm") }}</h3>
+          <span class="sr-only">{{ __("Close") }}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5 cursor-pointer"
@@ -364,20 +364,20 @@
         <h3
           class="mt-5 block text-left text-base text-gray-900 dark:text-white"
         >
-          Permanently Submit{{ this.posClose.posClosingEntry }}?
+          {{ __("Permanently submit {0}?", [this.posClose.posClosingEntry]) }}
         </h3>
         <div class="flex justify-end">
           <button
             @click="this.posClose.showSumbitPosclose = false"
             class="mr-3 mt-6 rounded border border-gray-300 bg-gray-50 px-3 py-2"
           >
-            No
+            {{ __("No") }}
           </button>
           <button
             @click="this.posClose.sumbitPosClosing()"
             class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
           >
-            Yes
+            {{ __("Yes") }}
           </button>
         </div>
       </div>

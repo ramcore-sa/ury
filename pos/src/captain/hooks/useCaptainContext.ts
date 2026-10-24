@@ -5,6 +5,7 @@ import {
   getCaptainContext,
   type CaptainContext,
 } from '../../lib/captain-context-api';
+import { t } from '../../i18n';
 
 export interface UseCaptainContextResult {
   /** Raw backend response from `get_captain_context()`, or null while loading/on error. */
@@ -117,7 +118,7 @@ export const useCaptainContext = (): UseCaptainContextResult => {
       const result = await getCaptainContext();
       setContext(result);
     } catch (err) {
-      setError((err as Error).message || 'Failed to load captain context.');
+      setError((err as Error).message || t('captain.load_context_failed'));
       setContext(null);
     } finally {
       setIsLoading(false);

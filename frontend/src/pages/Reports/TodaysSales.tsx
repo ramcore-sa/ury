@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard } from '@ury/ui';
 import { Receipt, IndianRupee, Percent, Sigma, Equal, BadgePercent } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -38,7 +38,7 @@ export function TodaysSales() {
       });
       setData(res.message ?? (res as unknown as TodaySalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -60,10 +60,10 @@ export function TodaysSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Today's Sales</h1>
+          <h1 className="text-xl font-semibold">{__("Today's Sales")}</h1>
           <p className="text-sm text-muted-foreground">
-            {data ? `${data.day_of_week}, ${data.query_date}` : 'Live sales snapshot'}
-            {activeBranchId === 'all' ? ' · All Branches' : ''}
+            {data ? `${data.day_of_week}, ${data.query_date}` : __('Live sales snapshot')}
+            {activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export function TodaysSales() {
           />
           {data && (
             <span className="text-xs text-muted-foreground">
-              Updated {new Date(data.last_updated_at).toLocaleTimeString()}
+              {__('Updated {0}', [new Date(data.last_updated_at).toLocaleTimeString()])}
             </span>
           )}
         </div>
@@ -89,38 +89,38 @@ export function TodaysSales() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard label="Total Invoices" value={data.total_invoices} icon={<Receipt className="w-4 h-4" />} />
+          <StatCard label={__('Total Invoices')} value={data.total_invoices} icon={<Receipt className="w-4 h-4" />} />
           <StatCard
-            label="Item Total"
+            label={__('Item Total')}
             value={formatCurrency(data.item_total)}
             icon={<IndianRupee className="w-4 h-4" />}
           />
           <StatCard
-            label="Total Taxes & Charges"
+            label={__('Total Taxes & Charges')}
             value={formatCurrency(data.total_taxes_and_charges)}
             icon={<Percent className="w-4 h-4" />}
           />
           <StatCard
-            label="Grand Total"
+            label={__('Grand Total')}
             value={formatCurrency(data.grand_total)}
             icon={<Sigma className="w-4 h-4" />}
             className="border-primary-200"
           />
           <StatCard
-            label="Round Off"
+            label={__('Round Off')}
             value={formatCurrency(data.round_off)}
             icon={<Equal className="w-4 h-4" />}
           />
           <StatCard
-            label="Cash Discounts"
+            label={__('Cash Discounts')}
             value={formatCurrency(data.cash_discounts)}
             icon={<BadgePercent className="w-4 h-4" />}
             delta={
               data.cash_discounts !== 0
-                ? { value: data.cash_discounts < 0 ? 'given away' : 'owed to house', direction: data.cash_discounts < 0 ? 'down' : 'up' }
+                ? { value: data.cash_discounts < 0 ? __('given away') : __('owed to house'), direction: data.cash_discounts < 0 ? 'down' : 'up' }
                 : undefined
             }
           />

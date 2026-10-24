@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Receipt, IndianRupee, TrendingUp, Search } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -31,10 +31,11 @@ interface CustomerDataResult {
   };
 }
 
-const columns: DataTableColumn<InvoiceRow>[] = [
-  { key: 'date', header: 'Date' },
-  { key: 'invoice', header: 'Invoice' },
-  { key: 'amount', header: 'Amount', render: (r) => formatCurrency(r.amount), align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<InvoiceRow>[] => [
+  { key: 'date', header: __('Date') },
+  { key: 'invoice', header: __('Invoice') },
+  { key: 'amount', header: __('Amount'), render: (r) => formatCurrency(r.amount), align: 'right' },
 ];
 
 export function CustomerData() {
@@ -82,7 +83,7 @@ export function CustomerData() {
       });
       setData(res.message ?? (res as unknown as CustomerDataResult));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -96,8 +97,8 @@ export function CustomerData() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Customer Data</h1>
-          <p className="text-sm text-muted-foreground">Per-customer purchase history</p>
+          <h1 className="text-xl font-semibold">{__('Customer Data')}</h1>
+          <p className="text-sm text-muted-foreground">{__('Per-customer purchase history')}</p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
       </div>
@@ -107,7 +108,7 @@ export function CustomerData() {
           <Search className="w-4 h-4 text-muted-foreground shrink-0" />
           <input
             type="text"
-            placeholder="Search customer by name..."
+            placeholder={__('Search customer by name...')}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -144,27 +145,27 @@ export function CustomerData() {
       )}
 
       {!selectedCustomer && !error && (
-        <div className="text-sm text-muted-foreground">Search and select a customer to view their history.</div>
+        <div className="text-sm text-muted-foreground">{__('Search and select a customer to view their history.')}</div>
       )}
 
-      {isLoading && <div className="text-sm text-muted-foreground">Loading...</div>}
+      {isLoading && <div className="text-sm text-muted-foreground">{__('Loading...')}</div>}
 
       {data && !isLoading && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard label="Visits" value={data.summary.visit_count} icon={<Receipt className="w-4 h-4" />} />
+            <StatCard label={__('Visits')} value={data.summary.visit_count} icon={<Receipt className="w-4 h-4" />} />
             <StatCard
-              label="Total Spend"
+              label={__('Total Spend')}
               value={formatCurrency(data.summary.total_spend)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
             <StatCard
-              label="Avg Spend / Visit"
+              label={__('Avg Spend / Visit')}
               value={formatCurrency(data.summary.avg_spend)}
               icon={<TrendingUp className="w-4 h-4" />}
             />
           </div>
-          <DataTable columns={columns} rows={data.invoices} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.invoices} isLoading={isLoading} />
         </>
       )}
     </div>

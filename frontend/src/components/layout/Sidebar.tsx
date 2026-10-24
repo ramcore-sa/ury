@@ -1,3 +1,4 @@
+import { __ } from '@ury/core';
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../store/useAuth';
@@ -26,20 +27,24 @@ interface NavItem {
   icon: React.ElementType;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Menu', path: '/menu', icon: UtensilsCrossed },
-  { label: 'Table', path: '/table', icon: Grid3X3 },
-  { label: 'Room', path: '/room', icon: Map },
-  { label: 'Branch', path: '/branch', icon: Building2 },
+// 'Restaurant' context: the desk-wide catalogue renders a bare "Table" as a
+// spreadsheet table and "Room" as a hotel room; here they are a dining table
+// and a dining hall.
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getNavItems = (): NavItem[] => [
+  { label: __('Dashboard'), path: '/dashboard', icon: LayoutDashboard },
+  { label: __('Menu'), path: '/menu', icon: UtensilsCrossed },
+  { label: __('Table', null, 'Restaurant'), path: '/table', icon: Grid3X3 },
+  { label: __('Room', null, 'Restaurant'), path: '/room', icon: Map },
+  { label: __('Branch'), path: '/branch', icon: Building2 },
 ];
 
-const SETTINGS_ITEMS: NavItem[] = [
-  { label: 'POS Profile', path: '/pos-profile', icon: SlidersHorizontal },
-  { label: 'User', path: '/user', icon: Users },
-  { label: 'Aggregators', path: '/aggregator', icon: Store },
-  { label: 'Daily P&L Settings', path: '/report-settings', icon: FileText },
-  { label: 'Production Unit', path: '/production-unit', icon: Grid }
+const getSettingsItems = (): NavItem[] => [
+  { label: __('POS Profile'), path: '/pos-profile', icon: SlidersHorizontal },
+  { label: __('User'), path: '/user', icon: Users },
+  { label: __('Aggregators'), path: '/aggregator', icon: Store },
+  { label: __('Daily P&L Settings'), path: '/report-settings', icon: FileText },
+  { label: __('Production Unit'), path: '/production-unit', icon: Grid }
 ];
 
 const reportGroups = groupReports(reportsRegistry);
@@ -53,7 +58,7 @@ const ReportsPanel: React.FC = () => (
     >
       <div className="flex items-center gap-3 ms-1">
         <ArrowLeft className="w-4 h-4 text-gray-500 shrink-0" />
-        <span>Back</span>
+        <span>{__('Back')}</span>
       </div>
     </Link>
 
@@ -61,7 +66,8 @@ const ReportsPanel: React.FC = () => (
       {reportGroupEntries.map(([group, reports], index) => (
         <div key={group} className={index > 0 ? 'pt-3 border-t border-gray-200' : undefined}>
           <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2 px-2">
-            {group}
+            {/* reportsRegistry is module-level, so its labels are translated here at render. */}
+            {__(group)}
           </h3>
           <div className="space-y-1">
             {reports.map((report) => {
@@ -77,7 +83,7 @@ const ReportsPanel: React.FC = () => (
                       {isActive && <SidebarActiveIndicator />}
                       <div className="flex items-center gap-3 ms-1">
                         <Icon className="w-4 h-4 text-gray-500 shrink-0" />
-                        <span>{report.label}</span>
+                        <span>{__(report.label)}</span>
                       </div>
                     </>
                   )}
@@ -93,7 +99,7 @@ const ReportsPanel: React.FC = () => (
 
 const MainPanel: React.FC<{ isManager: boolean }> = ({ isManager }) => {
   const location = useLocation();
-  const isSettingsPath = SETTINGS_ITEMS.some((item) => location.pathname.startsWith(item.path));
+  const isSettingsPath = getSettingsItems().some((item) => location.pathname.startsWith(item.path));
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(isSettingsPath);
 
   useEffect(() => {
@@ -114,14 +120,14 @@ const MainPanel: React.FC<{ isManager: boolean }> = ({ isManager }) => {
               {isActive && <SidebarActiveIndicator />}
               <div className="flex items-center gap-3 ms-1">
                 <BarChart3 className="w-4 h-4 text-gray-500 shrink-0" />
-                <span>Reports</span>
+                <span>{__('Reports')}</span>
               </div>
             </>
           )}
         </NavLink>
       )}
 
-      {NAV_ITEMS.map((item) => {
+      {getNavItems().map((item) => {
         const Icon = item.icon;
         return (
           <NavLink
@@ -150,7 +156,7 @@ const MainPanel: React.FC<{ isManager: boolean }> = ({ isManager }) => {
           {isSettingsPath && <SidebarActiveIndicator />}
           <div className="flex items-center gap-3 ms-1">
             <Settings className="w-4 h-4 text-gray-500 shrink-0" />
-            <span>Settings</span>
+            <span>{__('Settings')}</span>
           </div>
           <ChevronDown
             className={cn(
@@ -162,7 +168,7 @@ const MainPanel: React.FC<{ isManager: boolean }> = ({ isManager }) => {
 
         {isSettingsOpen && (
           <div className="mt-1 pl-4 space-y-1">
-            {SETTINGS_ITEMS.map((item) => {
+            {getSettingsItems().map((item) => {
               const Icon = item.icon;
               return (
                 <NavLink

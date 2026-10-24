@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatCurrency } from '@ury/core';
+import { formatCurrency, __ } from '@ury/core';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Spinner } from '@ury/ui';
 import { useBranchContext } from '../../context/BranchContext';
 import { TransactionRecord } from '../../services/dashboard';
@@ -12,7 +12,7 @@ interface ReportWidgetsProps {
 export const ReportWidgets: React.FC<ReportWidgetsProps> = ({ recentTransactions, loading }) => {
   const { activeBranchId, activeBranch } = useBranchContext();
 
-  const activeBranchName = activeBranchId === 'all' ? 'All Branches' : (activeBranch?.name || 'Selected Branch');
+  const activeBranchName = activeBranchId === 'all' ? __('All Branches') : (activeBranch?.name || __('Selected Branch'));
 
   return (
     <div className="space-y-6">
@@ -21,10 +21,10 @@ export const ReportWidgets: React.FC<ReportWidgetsProps> = ({ recentTransactions
         <CardHeader className="border-b border-gray-100 bg-gray-50/50 p-5">
           <div>
             <CardTitle className="text-lg font-bold text-gray-900">
-              Live POS Transactions
+              {__('Live POS Transactions')}
             </CardTitle>
             <p className="text-xs text-gray-500 mt-0.5">
-              Real-time sales and active checkouts
+              {__('Real-time sales and active checkouts')}
             </p>
           </div>
         </CardHeader>
@@ -39,40 +39,40 @@ export const ReportWidgets: React.FC<ReportWidgetsProps> = ({ recentTransactions
               <table className="w-full text-left text-xs">
                 <thead className="bg-gray-50 text-gray-500 font-semibold border-b border-gray-100">
                   <tr>
-                    <th className="px-5 py-3.5">Invoice ID</th>
-                    <th className="px-5 py-3.5">Customer</th>
-                    <th className="px-5 py-3.5">Table / Location</th>
-                    <th className="px-5 py-3.5">Order Type</th>
-                    <th className="px-5 py-3.5">Date &amp; Time</th>
-                    <th className="px-5 py-3.5">Status</th>
-                    <th className="px-5 py-3.5 text-right">Grand Total</th>
+                    <th className="px-5 py-3.5">{__('Invoice ID')}</th>
+                    <th className="px-5 py-3.5">{__('Customer')}</th>
+                    <th className="px-5 py-3.5">{__('Table / Location')}</th>
+                    <th className="px-5 py-3.5">{__('Order Type')}</th>
+                    <th className="px-5 py-3.5">{__('Date & Time')}</th>
+                    <th className="px-5 py-3.5">{__('Status')}</th>
+                    <th className="px-5 py-3.5 text-right">{__('Grand Total')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
                   {recentTransactions.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-5 py-8 text-center text-gray-400">
-                        No transactions recorded yet today.
+                        {__('No transactions recorded yet today.')}
                       </td>
                     </tr>
                   ) : (
                     recentTransactions.map((tx) => (
                       <tr key={tx.name} className="hover:bg-primary/10 transition-colors">
                         <td className="px-5 py-3.5 font-bold text-primary">{tx.name}</td>
-                        <td className="px-5 py-3.5 text-gray-900 font-semibold">{tx.customer || 'Walk-in Customer'}</td>
-                        <td className="px-5 py-3.5 text-gray-600">{tx.restaurant_table || 'Counter'}</td>
+                        <td className="px-5 py-3.5 text-gray-900 font-semibold">{tx.customer || __('Walk-in Customer')}</td>
+                        <td className="px-5 py-3.5 text-gray-600">{tx.restaurant_table || __('Counter')}</td>
                         <td className="px-5 py-3.5">
                           <Badge
                             variant="outline"
                             className="border-primary/20 bg-primary/10 text-primary font-semibold"
                           >
-                            {tx.order_type || 'Dine In'}
+                            {__(tx.order_type || 'Dine In')}
                           </Badge>
                         </td>
                         <td className="px-5 py-3.5 text-gray-500">{tx.posting_date} {tx.posting_time}</td>
                         <td className="px-5 py-3.5">
                           <Badge variant={tx.status === 'Paid' || tx.status === 'Submitted' ? 'success' : 'warning'}>
-                            {tx.status}
+                            {__(tx.status)}
                           </Badge>
                         </td>
                         <td className="px-5 py-3.5 text-right font-bold text-gray-900">

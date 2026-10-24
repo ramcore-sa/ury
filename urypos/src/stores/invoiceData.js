@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { __ } from "../i18n.js";
 import router from "../router";
 import { useTableStore } from "./Table.js";
 import { useMenuStore } from "./Menu.js";
@@ -216,7 +217,11 @@ export const useInvoiceDataStore = defineStore("invoiceData", {
         Object.entries(originalItems).forEach(([itemCode, itemData]) => {
           if (currentItems[itemCode] && currentItems[itemCode].qty < itemData.qty) {
             reducedQtyItems.push(
-              `${itemData.name} (qty reduced from ${itemData.qty} to ${currentItems[itemCode].qty})`
+              __("{0} (qty reduced from {1} to {2})", [
+                itemData.name,
+                itemData.qty,
+                currentItems[itemCode].qty,
+              ])
             );
           }
         });
@@ -229,18 +234,18 @@ export const useInvoiceDataStore = defineStore("invoiceData", {
             const removedItemNames = removedItems.map(
               itemCode => originalItems[itemCode].name
             );
-            errorMsg.push(`Removed items: ${removedItemNames.join(', ')}\n`);
+            errorMsg.push(__("Removed items: {0}", [removedItemNames.join(', ')]) + "\n");
           }
           if (reducedQtyItems.length > 0) {
-            errorMsg.push(`Modified quantities: ${reducedQtyItems.join(',\n')}`);
+            errorMsg.push(__("Modified quantities: {0}", [reducedQtyItems.join(',\n')]));
           }
     
           // Show confirmation modal and wait for user response
           await new Promise((resolve, reject) => {
             this.notificationModal.showModal({
-              title: "Are You Sure to remove these items?",
+              title: __("Are you sure you want to remove these items?"),
               message: errorMsg.join('\n'),
-              actionText: "Yes",
+              actionText: __("Yes"),
               showCancelButton: true,
               onConfirm: () => {
                 this.invoiceUpdating = true;
@@ -415,8 +420,9 @@ export const useInvoiceDataStore = defineStore("invoiceData", {
           ) {
             this.alert.createAlert(
               "Message",
-              "Printing is Blocked Table is assigned to " +
-              result.message.waiter,
+              __("Printing is blocked. The table is assigned to {0}", [
+                result.message.waiter,
+              ]),
               "OK"
             );
           } else {
@@ -668,7 +674,7 @@ export const useInvoiceDataStore = defineStore("invoiceData", {
           } else {
             this.alert.createAlert(
               "Message",
-              "You don't Have Permission to Cancel ",
+              "You don't have permission to cancel",
               "OK"
             );
             this.cancelInvoiceFlag = false;

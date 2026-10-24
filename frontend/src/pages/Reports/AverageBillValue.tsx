@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Gauge, IndianRupee, Receipt } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -20,11 +20,12 @@ interface AverageBillValueData {
   summary: { total_bills: number; total_sales: number; average_abv: number };
 }
 
-const columns: DataTableColumn<ABVRow>[] = [
-  { key: 'date', header: 'Date' },
-  { key: 'bill_count', header: 'Bills', align: 'right' },
-  { key: 'total_sales', header: 'Total Sales', render: (r) => formatCurrency(r.total_sales), align: 'right' },
-  { key: 'abv', header: 'ABV', render: (r) => formatCurrency(r.abv), align: 'right' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<ABVRow>[] => [
+  { key: 'date', header: __('Date') },
+  { key: 'bill_count', header: __('Bills'), align: 'right' },
+  { key: 'total_sales', header: __('Total Sales'), render: (r) => formatCurrency(r.total_sales), align: 'right' },
+  { key: 'abv', header: __('ABV'), render: (r) => formatCurrency(r.abv), align: 'right' },
 ];
 
 export function AverageBillValue() {
@@ -49,7 +50,7 @@ export function AverageBillValue() {
       });
       setData(res.message ?? (res as unknown as AverageBillValueData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -63,9 +64,9 @@ export function AverageBillValue() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Average Bill Value</h1>
+          <h1 className="text-xl font-semibold">{__('Average Bill Value')}</h1>
           <p className="text-sm text-muted-foreground">
-            Daily average bill trend {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Daily average bill trend')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -78,26 +79,26 @@ export function AverageBillValue() {
       )}
 
       {isLoading && !data ? (
-        <div className="text-sm text-muted-foreground">Loading...</div>
+        <div className="text-sm text-muted-foreground">{__('Loading...')}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard label="Total Bills" value={data.summary.total_bills} icon={<Receipt className="w-4 h-4" />} />
+            <StatCard label={__('Total Bills')} value={data.summary.total_bills} icon={<Receipt className="w-4 h-4" />} />
             <StatCard
-              label="Total Sales"
+              label={__('Total Sales')}
               value={formatCurrency(data.summary.total_sales)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
             <StatCard
-              label="Average Bill Value"
+              label={__('Average Bill Value')}
               value={formatCurrency(data.summary.average_abv)}
               icon={<Gauge className="w-4 h-4" />}
             />
           </div>
 
-          <LineChartCard title="ABV Trend" data={data.data} xKey="date" yKeys={['abv']} labels={{ abv: 'Avg Bill Value' }} />
+          <LineChartCard title={__('ABV Trend')} data={data.data} xKey="date" yKeys={['abv']} labels={{ abv: __('Avg Bill Value') }} />
 
-          <DataTable columns={columns} rows={data.data} isLoading={isLoading} />
+          <DataTable columns={getColumns()} rows={data.data} isLoading={isLoading} />
         </>
       ) : null}
     </div>

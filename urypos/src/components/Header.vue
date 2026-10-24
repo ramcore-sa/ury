@@ -16,7 +16,7 @@
             "
           >
             <a href="/urypos/Table" class="flex-shrink-0">
-              <img :src="imagePath" alt="URY POS logo" class="w-32 lg:w-44" />
+              <img :src="imagePath" :alt='__("URY POS logo")' class="w-32 lg:w-44" />
             </a>
           </template>
           <template v-else>
@@ -69,14 +69,14 @@
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 @click="reload"
               >
-                Reload
+                {{ __("Reload") }}
               </a>
 
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 @click="this.auth.routeToHome()"
-                >Switch To Desk
+                >{{ __("Switch To Desk") }}
               </a>
               <div class="border-t border-gray-200"></div>
               <a
@@ -84,7 +84,7 @@
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 @click="this.auth.logOut"
               >
-                Log out
+                {{ __("Log out") }}
               </a>
             </div>
           </div>

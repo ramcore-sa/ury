@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useBranchContext } from '../../context/BranchContext';
-import { logout, call, getLoggedUser, getUserRoles } from '@ury/core';
+import { logout, call, getLoggedUser, getUserRoles, __ } from '@ury/core';
 import uryLogo from '../../../Public/photo_2026-08-19_13-24-09.jpg';
 import {
   Bell,
@@ -89,7 +89,7 @@ export const Header: React.FC = () => {
         if (res && res.message) {
           const mapped = res.message.map((n: any) => ({
             id: n.name,
-            title: n.subject || 'Notification',
+            title: n.subject || __('Notification'),
             message: n.email_content || '',
             timestamp: n.creation || '',
             type: 'info',
@@ -147,7 +147,7 @@ export const Header: React.FC = () => {
             >
               <Building2 className="w-4 h-4 text-primary" />
               <span className="max-w-[120px] sm:max-w-[160px] truncate">
-                {activeBranchId === 'all' ? 'All Branches' : (activeBranch?.name || 'Select Branch')}
+                {activeBranchId === 'all' ? __('All Branches') : (activeBranch?.name || __('Select Branch'))}
               </span>
               <ChevronDown className={`w-4 h-4 transition-transform ${isBranchDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
@@ -155,7 +155,7 @@ export const Header: React.FC = () => {
             {isBranchDropdownOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-3 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Select Active Branch
+                  {__('Select Active Branch')}
                 </div>
 
                 <button
@@ -171,7 +171,7 @@ export const Header: React.FC = () => {
                 >
                   <div className="flex items-center space-x-2">
                     <Store className="w-4 h-4" />
-                    <span>All Branches</span>
+                    <span>{__('All Branches')}</span>
                   </div>
                   {activeBranchId === 'all' && <Check className="w-4 h-4 text-primary" />}
                 </button>
@@ -205,7 +205,7 @@ export const Header: React.FC = () => {
           <button
             onClick={() => setIsNotificationOpen(true)}
             className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-            aria-label="Open notifications"
+            aria-label={__('Open notifications')}
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -242,7 +242,7 @@ export const Header: React.FC = () => {
                     className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
                     <Monitor className="w-4 h-4" />
-                    <span>Switch To Desk</span>
+                    <span>{__('Switch To Desk')}</span>
                   </button>
 
                   <button
@@ -253,7 +253,7 @@ export const Header: React.FC = () => {
                     className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Clear Cache</span>
+                    <span>{__('Clear Cache')}</span>
                   </button>
 
                   <button
@@ -261,7 +261,7 @@ export const Header: React.FC = () => {
                     className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
                   >
                     <LogOut className="w-4 h-4 text-red-500" />
-                    <span>Logout</span>
+                    <span>{__('Logout')}</span>
                   </button>
                 </div>
               </div>
@@ -284,7 +284,7 @@ export const Header: React.FC = () => {
               <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
                 <div className="flex items-center space-x-2">
                   <Bell className="w-5 h-5 text-primary" />
-                  <h2 className="text-base font-semibold text-gray-900">Notifications</h2>
+                  <h2 className="text-base font-semibold text-gray-900">{__('Notifications')}</h2>
                   {unreadCount > 0 && (
                     <span className="px-2 py-0.5 text-xs font-bold bg-primary text-white rounded-full">
                       {unreadCount}
@@ -298,7 +298,7 @@ export const Header: React.FC = () => {
                       onClick={handleMarkAllRead}
                       className="text-xs font-medium text-primary hover:underline"
                     >
-                      Mark all read
+                      {__('Mark all read')}
                     </button>
                   )}
                   <button
@@ -314,7 +314,7 @@ export const Header: React.FC = () => {
               <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
                 {notifications.length === 0 ? (
                   <div className="p-8 text-center text-gray-500">
-                    No new notifications
+                    {__('No new notifications')}
                   </div>
                 ) : (
                   notifications.map((item) => (

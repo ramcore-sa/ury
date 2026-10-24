@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { StatCard, DataTable, type DataTableColumn } from '@ury/ui';
 import { Users, IndianRupee, Receipt } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -22,12 +22,13 @@ interface EmployeeSalesData {
   summary: { total_employees: number; period_total_invoices: number; period_total_sales: number };
 }
 
-const columns: DataTableColumn<EmployeeRow>[] = [
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<EmployeeRow>[] => [
   { key: 'rank', header: '#' },
-  { key: 'employee_name', header: 'Employee' },
-  { key: 'total_invoices', header: 'Invoices', align: 'right' },
-  { key: 'sales_amount', header: 'Sales Amount', render: (r) => formatCurrency(r.sales_amount), align: 'right' },
-  { key: 'average_invoice_value', header: 'Avg / Invoice', render: (r) => formatCurrency(r.average_invoice_value), align: 'right' },
+  { key: 'employee_name', header: __('Employee') },
+  { key: 'total_invoices', header: __('Invoices'), align: 'right' },
+  { key: 'sales_amount', header: __('Sales Amount'), render: (r) => formatCurrency(r.sales_amount), align: 'right' },
+  { key: 'average_invoice_value', header: __('Avg / Invoice'), render: (r) => formatCurrency(r.average_invoice_value), align: 'right' },
 ];
 
 export function EmployeeSales() {
@@ -52,7 +53,7 @@ export function EmployeeSales() {
       });
       setData(res.message ?? (res as unknown as EmployeeSalesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +69,9 @@ export function EmployeeSales() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Employee Sales</h1>
+          <h1 className="text-xl font-semibold">{__('Employee Sales')}</h1>
           <p className="text-sm text-muted-foreground">
-            Staff leaderboard {activeBranchId === 'all' ? '· All Branches' : ''}
+            {__('Staff leaderboard')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -85,14 +86,14 @@ export function EmployeeSales() {
       {data && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard label="Staff" value={data.summary.total_employees} icon={<Users className="w-4 h-4" />} />
+            <StatCard label={__('Staff')} value={data.summary.total_employees} icon={<Users className="w-4 h-4" />} />
             <StatCard
-              label="Total Invoices"
+              label={__('Total Invoices')}
               value={data.summary.period_total_invoices}
               icon={<Receipt className="w-4 h-4" />}
             />
             <StatCard
-              label="Total Sales"
+              label={__('Total Sales')}
               value={formatCurrency(data.summary.period_total_sales)}
               icon={<IndianRupee className="w-4 h-4" />}
             />
@@ -100,17 +101,17 @@ export function EmployeeSales() {
 
           {top10.length >= 2 && (
             <BarChartCard
-              title={`Top ${Math.min(10, top10.length)} by Sales`}
+              title={__('Top {0} by Sales', [Math.min(10, top10.length)])}
               data={top10}
               xKey="employee_name"
               yKeys={['sales_amount']}
-              labels={{ sales_amount: 'Sales Amount' }}
+              labels={{ sales_amount: __('Sales Amount') }}
             />
           )}
         </>
       )}
 
-      <DataTable columns={columns} rows={data?.employees ?? []} isLoading={isLoading} />
+      <DataTable columns={getColumns()} rows={data?.employees ?? []} isLoading={isLoading} />
     </div>
   );
 }

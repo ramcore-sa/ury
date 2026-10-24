@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { call, formatCurrency } from '@ury/core';
+import { call, formatCurrency, __ } from '@ury/core';
 import { DataTable, type DataTableColumn, Button } from '@ury/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useBranchContext } from '../../context/BranchContext';
@@ -27,16 +27,17 @@ interface DaywiseInvoicesData {
   pagination: { page: number; page_size: number; total: number; total_pages: number };
 }
 
-const columns: DataTableColumn<InvoiceRow>[] = [
-  { key: 'date', header: 'Date' },
-  { key: 'time', header: 'Time' },
-  { key: 'invoice', header: 'Invoice' },
-  { key: 'item_total', header: 'Item Total', render: (r) => formatCurrency(r.item_total), align: 'right' },
-  { key: 'total_taxes', header: 'Taxes', render: (r) => formatCurrency(r.total_taxes), align: 'right' },
-  { key: 'grand_total', header: 'Grand Total', render: (r) => formatCurrency(r.grand_total), align: 'right' },
-  { key: 'received_amount', header: 'Received', render: (r) => formatCurrency(r.received_amount), align: 'right' },
-  { key: 'cash_discounts', header: 'Cash Discounts', render: (r) => formatCurrency(r.cash_discounts), align: 'right' },
-  { key: 'payment_mode', header: 'Payment Mode', render: (r) => r.payment_mode || '—' },
+// A function, not a constant, so __() runs after the catalogue has loaded.
+const getColumns = (): DataTableColumn<InvoiceRow>[] => [
+  { key: 'date', header: __('Date') },
+  { key: 'time', header: __('Time') },
+  { key: 'invoice', header: __('Invoice') },
+  { key: 'item_total', header: __('Item Total'), render: (r) => formatCurrency(r.item_total), align: 'right' },
+  { key: 'total_taxes', header: __('Taxes'), render: (r) => formatCurrency(r.total_taxes), align: 'right' },
+  { key: 'grand_total', header: __('Grand Total'), render: (r) => formatCurrency(r.grand_total), align: 'right' },
+  { key: 'received_amount', header: __('Received'), render: (r) => formatCurrency(r.received_amount), align: 'right' },
+  { key: 'cash_discounts', header: __('Cash Discounts'), render: (r) => formatCurrency(r.cash_discounts), align: 'right' },
+  { key: 'payment_mode', header: __('Payment Mode'), render: (r) => r.payment_mode || '—' },
 ];
 
 const PAGE_SIZE = 50;
@@ -66,7 +67,7 @@ export function DaywiseInvoices() {
       });
       setData(res.message ?? (res as unknown as DaywiseInvoicesData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load report data.');
+      setError(err instanceof Error ? err.message : __('Failed to load report data.'));
     } finally {
       setIsLoading(false);
     }
@@ -86,10 +87,10 @@ export function DaywiseInvoices() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold">Daywise Invoices</h1>
+          <h1 className="text-xl font-semibold">{__('Daywise Invoices')}</h1>
           <p className="text-sm text-muted-foreground">
-            Invoice-level detail {activeBranchId === 'all' ? '· All Branches' : ''}
-            {pagination ? ` · ${pagination.total} invoices` : ''}
+            {__('Invoice-level detail')}{activeBranchId === 'all' ? ` · ${__('All Branches')}` : ''}
+            {pagination ? ` · ${__('{0} invoices', [pagination.total])}` : ''}
           </p>
         </div>
         <DateRangeFilter value={range} onChange={setRange} />
@@ -101,12 +102,12 @@ export function DaywiseInvoices() {
         </div>
       )}
 
-      <DataTable columns={columns} rows={data?.invoices ?? []} isLoading={isLoading} />
+      <DataTable columns={getColumns()} rows={data?.invoices ?? []} isLoading={isLoading} />
 
       {pagination && pagination.total_pages > 1 && (
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            Page {pagination.page} of {pagination.total_pages}
+            {__('Page {0} of {1}', [pagination.page, pagination.total_pages])}
           </span>
           <div className="flex gap-2">
             <Button
@@ -115,7 +116,7 @@ export function DaywiseInvoices() {
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
-              <ChevronLeft className="w-4 h-4" /> Prev
+              <ChevronLeft className="w-4 h-4" /> {__('Prev')}
             </Button>
             <Button
               variant="outline"
@@ -123,7 +124,7 @@ export function DaywiseInvoices() {
               disabled={page >= pagination.total_pages}
               onClick={() => setPage((p) => p + 1)}
             >
-              Next <ChevronRight className="w-4 h-4" />
+              {__('Next')} <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>

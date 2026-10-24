@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { CreditCard as Edit3, Save, Users, Move, X, Grid3x3 as Grid3X3, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { cn } from '@ury/ui';
-import { formatInvoiceTime } from '@ury/core';
+import { formatInvoiceTime, __ } from '@ury/core';
 import { call } from '@ury/core';
 import { Button } from '@ury/ui';
 import { SearchableSelect } from '../../components/common/SearchableSelect';
@@ -38,9 +38,43 @@ type POSInvoice = any;
 const getTableOrder = async (_name: string): Promise<any> => null;
 const getCombinedOrderTotals = (_order: any) => ({ roundedTotal: 0 });
 
+// This view was lifted from the POS app, which looks these dot-keys up in its
+// own locale files. This app has none, so the keys map to the POS app's English
+// and go through Frappe's catalogue like every other string here — the same
+// English, so one translation serves both apps.
+const TABLE_STRINGS: Record<string, string> = {
+  finish_editing: 'Finish Editing',
+  edit_layout: 'Edit Layout',
+  editing_layout_hint_title: 'Editing Layout',
+  drag_tables_hint: '• Drag tables to reposition',
+  autosave_hint: '• Changes autosave',
+  zoom_pan_hint: 'Use Scroll to zoom • Drag background to pan',
+  edit_settings: 'Edit Table Settings',
+  table_info: 'Table Info',
+  table_name: 'Table Name',
+  table_name_title: 'Table names are managed in backend',
+  capacity: 'Capacity',
+  capacity_placeholder: 'Enter 1-20',
+  capacity_range_hint: 'Valid range: 1-20 pax',
+  shape: 'Shape',
+  circle: 'Circle',
+  square: 'Square',
+  rectangle: 'Rectangle',
+  status: 'Status',
+  occupied: 'Occupied',
+  available: 'Available',
+  position: 'Position',
+  size: 'Size',
+  current_bill: 'Current Bill',
+  started_at: 'Started at:',
+  total_amount: 'Total Amount',
+};
+
 const t = (key: string) => {
   const parts = key.split('.');
   const last = parts[parts.length - 1];
+  const english = TABLE_STRINGS[last];
+  if (english) return __(english);
   return last.charAt(0).toUpperCase() + last.slice(1).replace(/_/g, ' ');
 };
 
@@ -476,21 +510,21 @@ const LayoutView: React.FC<Props> = ({ selectedRoom, tables, onBackToGrid, onRef
           <button
             onClick={handleZoomIn}
             className="p-2 bg-white hover:bg-gray-50 rounded-lg shadow-lg border border-gray-200 transition-colors"
-            title="Zoom In"
+            title={__('Zoom In')}
           >
             <ZoomIn className="w-5 h-5 text-gray-700" />
           </button>
           <button
             onClick={handleZoomOut}
             className="p-2 bg-white hover:bg-gray-50 rounded-lg shadow-lg border border-gray-200 transition-colors"
-            title="Zoom Out"
+            title={__('Zoom Out')}
           >
             <ZoomOut className="w-5 h-5 text-gray-700" />
           </button>
           <button
             onClick={handleResetZoom}
             className="p-2 bg-white hover:bg-gray-50 rounded-lg shadow-lg border border-gray-200 transition-colors"
-            title="Reset Zoom & Pan"
+            title={__('Reset Zoom & Pan')}
           >
             <RotateCcw className="w-5 h-5 text-gray-700" />
           </button>

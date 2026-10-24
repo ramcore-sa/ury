@@ -4,14 +4,14 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-gray-300 bg-opacity-50 text-lg"
       v-if="this.invoiceData.isPrinting"
     >
-      Printing Invoice
+      {{ __("Printing Invoice") }}
     </div>
 
     <div
       class="fixed inset-0 z-50 flex items-center justify-center bg-gray-300 bg-opacity-50 text-lg"
       v-if="this.recentOrders.isLoading"
     >
-      Payment Being Processing
+      {{ __("Payment Being Processing") }}
     </div>
     <div
       class="max-w-lg flex-1 rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-700 dark:bg-gray-800 sm:p-8"
@@ -20,7 +20,7 @@
         <h5
           class="text-xl font-bold leading-none text-gray-900 dark:text-white"
         >
-          Recent Orders
+          {{ __("Recent Orders") }}
         </h5>
       </div>
       <div class="w-full" @click="this.recentOrders.showOrder = false">
@@ -28,7 +28,7 @@
           type="search"
           id="orderSeach"
           class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-          placeholder="Search by Invoice Id or Customer Name or Mobile Number"
+          :placeholder='__("Search by Invoice Id or Customer Name or Mobile Number")'
           v-model="this.recentOrders.searchOrder"
           @input="this.recentOrders.handleSearchInput"
         />
@@ -38,22 +38,22 @@
           v-model="this.recentOrders.selectedStatus"
           @change="this.recentOrders.handleStatusChange"
         >
-          <option value="Draft">Draft</option>
-          <option value="Unbilled">Unbilled</option>
+          <option value="Draft">{{ __("Draft") }}</option>
+          <option value="Unbilled">{{ __("Unbilled") }}</option>
           <option
             value="Recently Paid"
             v-if="auth.viewAllStatus === 0 && invoiceData.paidLimit > 0"
           >
-            Recently Paid
+            {{ __("Recently Paid") }}
           </option>
           <option value="Paid" v-if="this.auth.viewAllStatus === 1">
-            Paid
+            {{ __("Paid") }}
           </option>
           <option value="Consolidated" v-if="this.auth.viewAllStatus === 1">
-            Consolidated
+            {{ __("Consolidated") }}
           </option>
           <option value="Return" v-if="this.auth.viewAllStatus === 1">
-            Return
+            {{ __("Return") }}
           </option>
         </select>
       </div>
@@ -116,7 +116,7 @@
           @click="this.recentOrders.previousPageClick()"
           class="mr-2 w-[80px] rounded-md border px-2 py-1"
         >
-          Previous
+          {{ __("Previous") }}
         </button>
         <button class="mr-2 rounded-md border px-2 py-1">
           {{ this.recentOrders.currentPage }}
@@ -126,7 +126,7 @@
           v-if="this.recentOrders.next"
           class="w-[80px] rounded-md border px-2 py-1"
         >
-          Next
+          {{ __("Next") }}
         </button>
       </div>
     </div>
@@ -196,7 +196,7 @@
                   <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
                 </svg>
                 <span class="text-xs">
-                  {{ this.recentOrders.selectedOrder.status }}
+                  {{ __(this.recentOrders.selectedOrder.status) }}
                 </span>
               </Badge>
             </div>
@@ -205,7 +205,7 @@
       </div>
       <div class="mb-2 mt-4">
         <p class="truncate text-lg font-semibold text-gray-900 dark:text-white">
-          Items
+          {{ __("Items") }}
         </p>
       </div>
       <div class="w-full rounded bg-gray-50 p-2">
@@ -291,7 +291,7 @@
           </svg>
 
           <template v-if="!recentOrders.showDiscount">
-            <span>Add Discount</span>
+            <span>{{ __("Add Discount") }}</span>
           </template>
 
           <template v-else>
@@ -308,7 +308,7 @@
         <input
           type="number"
           class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-          placeholder="Enter Discount Percentage"
+          :placeholder='__("Enter Discount Percentage")'
           v-model="this.recentOrders.percentage"
           @input="this.recentOrders.updatePercentage"
           @keyup.enter="this.recentOrders.applyDiscount"
@@ -317,14 +317,14 @@
       </div>
       <div class="mb-2 mt-5">
         <p class="truncate text-lg font-semibold text-gray-900 dark:text-white">
-          Totals
+          {{ __("Totals") }}
         </p>
       </div>
       <div class="w-full rounded bg-gray-50 p-2">
         <div class="ml-2 mt-2 flex items-center space-x-4">
           <div class="min-w-2 flex-1">
             <p class="truncate text-base text-gray-800 dark:text-white">
-              Net Total
+              {{ __("Net Total") }}
             </p>
           </div>
 
@@ -374,7 +374,7 @@
             <p
               class="truncate text-base font-semibold text-gray-800 dark:text-white"
             >
-              Grand Total
+              {{ __("Grand Total") }}
             </p>
           </div>
           <div class="items-center space-x-4 text-right">
@@ -403,7 +403,7 @@
           class="mb-2 mr-2 rounded-lg border border-gray-400 bg-white px-5 py-2.5 text-sm font-medium text-gray-800 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
           @click="this.invoiceData.printFunction()"
         >
-          Print Receipt
+          {{ __("Print Receipt") }}
         </button>
       </div>
       <div
@@ -428,14 +428,14 @@
               : ''
           "
         >
-          Edit
+          {{ __("Edit") }}
         </button>
         <button
           type="button"
           class="mb-2 mr-2 w-36 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
           @click="this.invoiceData.printFunction()"
         >
-          Print Receipt
+          {{ __("Print Receipt") }}
         </button>
       </div>
       <div
@@ -450,7 +450,7 @@
           class="mb-2 mr-2 w-36 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
           @click="this.recentOrders.billing()"
         >
-          Make Payment
+          {{ __("Make Payment") }}
         </button>
         <button
           type="button"
@@ -471,7 +471,7 @@
               : ''
           "
         >
-          Cancel Order
+          {{ __("Cancel Order") }}
         </button>
       </div>
       <div
@@ -481,7 +481,7 @@
         <div class="mt-20 flex items-center justify-center">
           <div class="w-full rounded-lg bg-white p-6 shadow-lg md:max-w-md">
             <div class="flex justify-end">
-              <span class="sr-only">Close</span>
+              <span class="sr-only">{{ __("Close") }}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
@@ -501,14 +501,14 @@
             <h2
               class="mt-1 block text-left text-xl font-medium text-gray-900 dark:text-white"
             >
-              Are you sure to cancel
+              {{ __("Are you sure to cancel") }}
             </h2>
             <div class="relative">
               <label
                 for="cancelReason"
                 class="mt-6 block text-left text-gray-900 dark:text-white"
               >
-                Reason
+                {{ __("Reason") }}
               </label>
               <input
                 type="text"
@@ -528,7 +528,7 @@
                 @click="handleConfirmCancellation()"
                 class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
               >
-                Yes
+                {{ __("Yes") }}
               </button>
             </div>
           </div>
@@ -541,7 +541,7 @@
         <div class="mt-10 flex items-center justify-center">
           <div class="h-82 w-full rounded-lg bg-white p-6 shadow-lg md:w-3/5">
             <div class="flex justify-end">
-              <span class="sr-only">Close</span>
+              <span class="sr-only">{{ __("Close") }}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
@@ -561,7 +561,7 @@
             <h2
               class="mt-1 block text-left text-xl font-medium text-gray-900 dark:text-white"
             >
-              Select Mode Of Payment
+              {{ __("Select Mode Of Payment") }}
             </h2>
             <div class="mt-8 flex items-center justify-center">
               <div class="w-full max-w-full overflow-x-auto">
@@ -600,7 +600,7 @@
             </div>
             <div v-if="recentOrders.changeAmount > 0" class="mt-4 p-4 bg-gray-50 rounded-lg">
               <div class="flex justify-between items-center mt-2 text-green-600">
-                <span class="text-lg font-medium">Change Amount:</span>
+                <span class="text-lg font-medium">{{ __("Change Amount:") }}</span>
                 <span class="text-lg">₹ {{ recentOrders.changeAmount.toFixed(2) }}</span>
               </div>
             </div>
@@ -612,7 +612,7 @@
                 "
                 class="mt-10 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
               >
-                Submit
+                {{ __("Submit") }}
               </button>
             </div>
           </div>
