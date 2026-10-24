@@ -67,13 +67,14 @@ const { registry } = defineRegistry(formCatalog, {
         </div>
       </div>
     ),
-    FieldRenderer: ({ props, bindings, emit }) => {
+    FieldRenderer: ({ props, bindings }) => {
       const { onFieldChange } = React.useContext(FormCallbackContext);
       const bindingPath = bindings?.value;
       const [boundVal, setBoundVal] = useStateBinding<string>(bindingPath || '');
       const val = bindingPath ? (boundVal ?? '') : (props.value ?? '');
       const field = props.field;
-      
+      const [, setFieldError] = useStateBinding<string>(`/errors/${field.id}`);
+
       const getColSpanClass = (field: any) => {
         if (field.id === 'company_name') return 'col-span-12 md:col-span-7';
         if (field.id === 'company_abbr') return 'col-span-12 md:col-span-5';
@@ -85,7 +86,10 @@ const { registry } = defineRegistry(formCatalog, {
         if (bindingPath) {
           setBoundVal(newVal);
         }
-        emit("change", { fieldId: field.id, value: newVal });
+        // Directly, not through a json-render action: emit() drops its payload
+        // and no handler was registered, so the error never cleared and every
+        // keystroke warned "No handler registered for action: fieldChange".
+        setFieldError('');
         onFieldChange?.(field.id, newVal);
       };
 
@@ -171,9 +175,6 @@ function buildElementTree(oldSchema: any) {
       elements[fieldId] = {
         type: "FieldRenderer",
         props: fieldProps,
-        on: {
-          change: { action: "fieldChange" }
-        }
       };
       return fieldId;
     });
@@ -259,16 +260,9 @@ export const DynamicForm = forwardRef<DynamicFormHandle, DynamicFormProps>(
       }
     }), [rawSchema, store]);
 
-    const handleAction = (action: string, params: any) => {
-      if (action === "fieldChange") {
-        store.set(`/errors/${params?.fieldId}`, '');
-        onFieldChange?.(params?.fieldId, params?.value);
-      }
-    };
-
     return (
       <FormCallbackContext.Provider value={{ onFieldChange }}>
-        <JSONUIProvider store={store} onAction={handleAction}>
+        <JSONUIProvider store={store}>
           <div className="space-y-6">
             <Renderer spec={spec} registry={registry} />
           </div>
