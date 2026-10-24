@@ -88,9 +88,11 @@ ury_demo_master_doctypes = [
     "URY Restaurant",
     "URY Table",
     "Product Bundle",
+    # Before the production unit, which links "Demo Profile"; it needs only the
+    # restaurant, branch and cashier above it.
+    "POS Profile",
     "URY Production Unit",
     "URY Report Settings",
-    "POS Profile"
 ]
 
 ury_demo_transaction_doctypes = [
