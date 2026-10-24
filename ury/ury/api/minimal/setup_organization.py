@@ -1,6 +1,14 @@
 import frappe
 from frappe import _
-from frappe.desk.page.setup_wizard.setup_wizard import load_languages, load_country, setup_complete
+from frappe.desk.page.setup_wizard.setup_wizard import load_languages, setup_complete
+
+try:
+    # v15 guesses the visitor's country from their IP. v16's new setup wizard
+    # removed it, and importing it by name made this whole module fail to load:
+    # every endpoint here answered 417 and the wizard could not start.
+    from frappe.desk.page.setup_wizard.setup_wizard import load_country
+except ImportError:
+    load_country = None
 from frappe.geo.country_info import get_country_info, get_all
 from erpnext.accounts.doctype.account.chart_of_accounts.chart_of_accounts import get_charts_for_country
 import pytz
@@ -14,7 +22,7 @@ def get_setup_defaults():
         frappe.throw(_("Not permitted"))
         
     languages = load_languages()
-    country_data = load_country()
+    country_data = load_country() if load_country else None
     if isinstance(country_data, str):
         detected_country = country_data
     elif isinstance(country_data, dict):
@@ -23,7 +31,9 @@ def get_setup_defaults():
         detected_country = ""
         
     if not detected_country:
-        detected_country = frappe.db.get_single_value("System Settings", "country") or "India"
+        # Saudi Arabia, not upstream's India: this copy serves RAMCORE's
+        # Saudi restaurants, and v16 has no IP guess to come first.
+        detected_country = frappe.db.get_single_value("System Settings", "country") or "Saudi Arabia"
     
     countries_dict = get_all()
     countries = list(countries_dict.keys())
