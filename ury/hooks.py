@@ -88,9 +88,11 @@ ury_demo_master_doctypes = [
     "URY Restaurant",
     "URY Table",
     "Product Bundle",
+    # Before the production unit, which links "Demo Profile"; it needs only the
+    # restaurant, branch and cashier above it.
+    "POS Profile",
     "URY Production Unit",
     "URY Report Settings",
-    "POS Profile"
 ]
 
 ury_demo_transaction_doctypes = [
@@ -132,6 +134,7 @@ ury_demo_transaction_doctypes = [
 
 # before_install = "ury.install.before_install"
 after_install = "ury.install.after_install"
+after_migrate = "ury.install.use_pos_invoice"
 
 # Uninstallation
 # ------------
