@@ -23,7 +23,8 @@ const TRANSLATIONS_METHOD = '/api/method/ury.ury.api.translations.get_translatio
  * first render: a string rendered before it arrives stays English until that
  * component re-renders, which for most screens is never.
  */
-export async function loadTranslations(): Promise<void> {
+export async function loadTranslations(language?: string): Promise<void> {
+  if (language) return loadLanguage(language);
   const boot = (window as any)?.frappe?.boot;
 
   // Older Frappe versions ship the catalogue inside the boot payload; using it
@@ -54,6 +55,31 @@ export async function loadTranslations(): Promise<void> {
   } catch {
     // English is a working UI; a missing catalogue must never stop a till.
   }
+}
+
+const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur', 'ku'];
+
+/**
+ * Switch to a language that is not yet the session's: the setup wizard shows
+ * the one being chosen before setup saves it. Direction follows, as index.html
+ * sets it on a normal load.
+ */
+async function loadLanguage(language: string): Promise<void> {
+  messages = {};
+  if (language !== 'en' && !language.startsWith('en-')) {
+    try {
+      const res = await fetch(
+        `${TRANSLATIONS_METHOD}?lang=${encodeURIComponent(language)}&language=${encodeURIComponent(language)}`,
+        { credentials: 'include', headers: { Accept: 'application/json' } },
+      );
+      const body = res.ok ? await res.json() : null;
+      if (body?.message && typeof body.message === 'object') messages = body.message as Messages;
+    } catch {
+      // English is a working UI.
+    }
+  }
+  document.documentElement.lang = language;
+  document.documentElement.dir = RTL_LANGUAGES.includes(language.split('-')[0]) ? 'rtl' : 'ltr';
 }
 
 /**

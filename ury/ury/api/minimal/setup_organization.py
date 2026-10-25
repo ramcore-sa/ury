@@ -115,13 +115,17 @@ def _normalize_setup_payload(payload=None, **kwargs):
 
 
 @frappe.whitelist()
-def get_setup_progress_steps(setup_ury_demo=0):
+def get_setup_progress_steps(setup_ury_demo=0, language=None):
     """Stage labels Frappe will run, so the wizard can list them before work starts."""
     from frappe.desk.page.setup_wizard.setup_wizard import get_setup_stages
     from ury.setup.setup_wizard import _wants_ury_demo
 
     if frappe.session.user == "Guest":
         frappe.throw(_("Not permitted"))
+
+    # In the language being chosen: setup has not saved it yet, so the session's is still the old one.
+    if language and frappe.db.exists("Language", language):
+        frappe.local.lang = language
 
     args = frappe._dict({"setup_ury_demo": 1 if _wants_ury_demo({"setup_ury_demo": setup_ury_demo}) else 0})
     steps = []
