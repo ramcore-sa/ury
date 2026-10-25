@@ -1,6 +1,5 @@
-import { __ } from '@ury/core';
+import { __, loadTranslations } from '@ury/core';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { WizardLayout } from '../../components/setup/WizardLayout';
 import { DynamicForm, DynamicFormHandle } from '../../components/setup/DynamicForm';
 import { InstallationTypeCard } from '../../components/setup/InstallationTypeCard';
@@ -43,7 +42,6 @@ type PendingSubmit = {
 };
 
 export default function SetupPage() {
-  const navigate = useNavigate();
   const formRef = useRef<DynamicFormHandle>(null);
   
   const [dynamicOptions, setDynamicOptions] = useState<Record<string, { value: string; label: string }[]>>({});
@@ -55,6 +53,8 @@ export default function SetupPage() {
   const [progressSteps, setProgressSteps] = useState<string[]>([]);
   const pendingSubmit = useRef<PendingSubmit | null>(null);
   const finishedRef = useRef(false);
+  const languageCodes = useRef<Record<string, string>>({});
+  const [, setShownLanguage] = useState('');
 
   useEffect(() => {
     async function loadDefaults() {
@@ -69,12 +69,15 @@ export default function SetupPage() {
           ? defaults.languages
           : (defaults.languages as any)?.languages || [];
 
+        // The value must stay Frappe's language_name: setup_complete looks the code
+        // up by it, and "Arabic" (not "العربية") found nothing and left the site English.
         const formattedLangs = rawLangs
           .map((l: any) => {
             const val = typeof l === 'string' ? l : (l.name || l.value || l.label);
-            if (val === 'English') return { value: 'English', label: 'English' };
-            if (val === 'العربية' || val === 'Arabic') return { value: 'Arabic', label: 'عربي' };
-            if (val === 'Français' || val === 'French') return { value: 'French', label: 'français' };
+            if (typeof l === 'object' && l.description) languageCodes.current[val] = l.description;
+            if (val === 'English') return { value: val, label: 'English' };
+            if (val === 'العربية') return { value: val, label: 'عربي' };
+            if (val === 'Français') return { value: val, label: 'français' };
             return null;
           })
           .filter(Boolean) as { value: string; label: string }[];
@@ -155,13 +158,25 @@ export default function SetupPage() {
     formRef.current?.setFieldValue('company_abbr', abbr);
   }, []);
 
+  const handleLanguageChange = useCallback(async (language: string) => {
+    const code = languageCodes.current[language];
+    if (!code) return;
+    await loadTranslations(code);
+    // Writing the field again is what re-renders the form: its fields only
+    // render on a store change, and the catalogue is not in the store.
+    formRef.current?.setFieldValue('language', language);
+    setShownLanguage(code);
+  }, []);
+
   const handleFieldChange = useCallback((fieldId: string, value: string) => {
-    if (fieldId === 'country') {
+    if (fieldId === 'language') {
+      handleLanguageChange(value);
+    } else if (fieldId === 'country') {
       handleCountryChange(value);
     } else if (fieldId === 'company_name') {
       handleCompanyNameChange(value);
     }
-  }, [handleCountryChange, handleCompanyNameChange]);
+  }, [handleLanguageChange, handleCountryChange, handleCompanyNameChange]);
 
   const finishSetup = useCallback((pending: PendingSubmit) => {
     if (finishedRef.current) return;
@@ -173,12 +188,14 @@ export default function SetupPage() {
       if (pending.payload.setup_ury_demo) {
         window.location.href = '/ury/dashboard';
       } else if (pending.installationType === 'minimal') {
-        navigate('/setup-wizard/1');
+        // A full load, not navigate(): setup has just saved the language, and
+        // only a reload brings step two in it, with its direction.
+        window.location.href = '/ury/setup-wizard/1';
       } else {
         window.location.href = '/app';
       }
     }, 800);
-  }, [navigate, progressSteps.length]);
+  }, [progressSteps.length]);
 
   const doApiCall = useCallback(async () => {
     const pending = pendingSubmit.current;
@@ -220,7 +237,7 @@ export default function SetupPage() {
     };
 
     try {
-      const steps = await setupService.getProgressSteps(setupUryDemo);
+      const steps = await setupService.getProgressSteps(setupUryDemo, languageCodes.current[payload.language]);
       setProgressSteps(
         steps.length
           ? steps.map((step) => step.status)

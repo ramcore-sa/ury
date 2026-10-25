@@ -41,9 +41,10 @@ export const setupService = {
     const res = await call<any>('ury.ury.api.minimal.setup_organization.get_country_defaults', { country });
     return res?.message ?? res;
   },
-  async getProgressSteps(setupUryDemo: boolean): Promise<SetupProgressStep[]> {
+  async getProgressSteps(setupUryDemo: boolean, language?: string): Promise<SetupProgressStep[]> {
     const res = await call<any>('ury.ury.api.minimal.setup_organization.get_setup_progress_steps', {
       setup_ury_demo: setupUryDemo ? 1 : 0,
+      language,
     });
     const steps = res?.message ?? res;
     return Array.isArray(steps) ? steps : [];
